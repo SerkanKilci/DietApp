@@ -1,0 +1,19 @@
+# .NET
+backend/**/bin/
+backend/**/obj/
+backend/**/.vs/
+*.user
+
+# Gerçek sırlar burada (JWT anahtarı, bağlantı dizesi) — repoya girmemeli.
+backend/src/DietApp.Api/appsettings.Development.json
+backend/src/DietApp.Api/appsettings.*.local.json
+
+# Node / Expo (mobile/ kendi .gitignore'unu da kullanıyor, bu daha geniş bir güvenlik ağı)
+node_modules/
+.expo/
+dist/
+web-build/
+
+# Editör/OS
+.DS_Store
+Thumbs.db

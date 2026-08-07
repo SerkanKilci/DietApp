@@ -1,0 +1,68 @@
+[
+  { "source": "Usda", "name": "Tavuk göğsü (çiğ, derisiz)", "caloriesPer100g": 120, "proteinPer100g": 22.5, "carbPer100g": 0, "fatPer100g": 2.6, "sodiumMgPer100g": 60 },
+  { "source": "Usda", "name": "Tavuk but (çiğ, derisiz)", "caloriesPer100g": 172, "proteinPer100g": 20, "carbPer100g": 0, "fatPer100g": 9.7, "sodiumMgPer100g": 80 },
+  { "source": "Usda", "name": "Dana kıyma %85 yağsız (çiğ)", "caloriesPer100g": 215, "proteinPer100g": 18, "carbPer100g": 0, "fatPer100g": 15, "sodiumMgPer100g": 66 },
+  {
+    "source": "Usda", "name": "Somon (Atlantik, çiğ)", "caloriesPer100g": 208, "proteinPer100g": 20, "carbPer100g": 0, "fatPer100g": 13, "sodiumMgPer100g": 59,
+    "micronutrients": [ { "code": "VITAMIN_D", "amountPer100g": 11, "unit": "MCG" }, { "code": "VITAMIN_B12", "amountPer100g": 3.2, "unit": "MCG" }, { "code": "POTASSIUM", "amountPer100g": 384, "unit": "MG" } ]
+  },
+  { "source": "Usda", "name": "Yumurta (tam, çiğ)", "caloriesPer100g": 143, "proteinPer100g": 12.6, "carbPer100g": 0.7, "fatPer100g": 9.5, "sugarPer100g": 0.4, "sodiumMgPer100g": 142 },
+  { "source": "Usda", "name": "Ton balığı (suda, konserve)", "caloriesPer100g": 116, "proteinPer100g": 26, "carbPer100g": 0, "fatPer100g": 1, "sodiumMgPer100g": 247 },
+  { "source": "Usda", "name": "Hindi göğsü (çiğ, derisiz)", "caloriesPer100g": 104, "proteinPer100g": 24, "carbPer100g": 0, "fatPer100g": 0.7, "sodiumMgPer100g": 55 },
+  { "source": "Usda", "name": "Karides (çiğ)", "caloriesPer100g": 85, "proteinPer100g": 20, "carbPer100g": 0.2, "fatPer100g": 0.5, "sodiumMgPer100g": 119 },
+  { "source": "Usda", "name": "Yoğurt (Yunan, yağsız, sade)", "caloriesPer100g": 59, "proteinPer100g": 10, "carbPer100g": 3.6, "fatPer100g": 0.4, "sugarPer100g": 3.2, "sodiumMgPer100g": 36 },
+  { "source": "Usda", "name": "Lor peyniri (az yağlı)", "caloriesPer100g": 72, "proteinPer100g": 12, "carbPer100g": 3, "fatPer100g": 2, "sugarPer100g": 3, "sodiumMgPer100g": 330 },
+  { "source": "Usda", "name": "Tofu (sert)", "caloriesPer100g": 76, "proteinPer100g": 8, "carbPer100g": 1.9, "fatPer100g": 4.8, "fiberPer100g": 0.3, "sodiumMgPer100g": 7 },
+  { "source": "Usda", "name": "Süzme yoğurt (tam yağlı)", "caloriesPer100g": 97, "proteinPer100g": 9, "carbPer100g": 4, "fatPer100g": 5, "sugarPer100g": 4, "sodiumMgPer100g": 36 },
+
+  { "source": "Usda", "name": "Pirinç (beyaz, pişmiş)", "caloriesPer100g": 130, "proteinPer100g": 2.7, "carbPer100g": 28, "fatPer100g": 0.3, "fiberPer100g": 0.4, "sodiumMgPer100g": 1 },
+  { "source": "Usda", "name": "Esmer pirinç (pişmiş)", "caloriesPer100g": 123, "proteinPer100g": 2.6, "carbPer100g": 26, "fatPer100g": 1, "fiberPer100g": 1.6, "sodiumMgPer100g": 1 },
+  { "source": "Usda", "name": "Yulaf (çiğ)", "caloriesPer100g": 389, "proteinPer100g": 16.9, "carbPer100g": 66, "fatPer100g": 6.9, "fiberPer100g": 10.6, "sodiumMgPer100g": 2 },
+  { "source": "Usda", "name": "Kinoa (pişmiş)", "caloriesPer100g": 120, "proteinPer100g": 4.4, "carbPer100g": 21, "fatPer100g": 1.9, "fiberPer100g": 2.8, "sugarPer100g": 0.9, "sodiumMgPer100g": 7 },
+  { "source": "Usda", "name": "Tam buğday ekmeği", "caloriesPer100g": 247, "proteinPer100g": 13, "carbPer100g": 41, "fatPer100g": 4.2, "fiberPer100g": 7, "sugarPer100g": 6, "sodiumMgPer100g": 400 },
+  { "source": "Usda", "name": "Beyaz ekmek", "caloriesPer100g": 265, "proteinPer100g": 9, "carbPer100g": 49, "fatPer100g": 3.2, "fiberPer100g": 2.7, "sugarPer100g": 5, "sodiumMgPer100g": 491 },
+  { "source": "Usda", "name": "Makarna (pişmiş)", "caloriesPer100g": 131, "proteinPer100g": 5, "carbPer100g": 25, "fatPer100g": 1.1, "fiberPer100g": 1.8, "sodiumMgPer100g": 1 },
+  { "source": "Usda", "name": "Patates (çiğ)", "caloriesPer100g": 77, "proteinPer100g": 2, "carbPer100g": 17, "fatPer100g": 0.1, "fiberPer100g": 2.2, "sugarPer100g": 0.8, "sodiumMgPer100g": 6 },
+  { "source": "Usda", "name": "Tatlı patates (çiğ)", "caloriesPer100g": 86, "proteinPer100g": 1.6, "carbPer100g": 20, "fatPer100g": 0.1, "fiberPer100g": 3, "sugarPer100g": 4.2, "sodiumMgPer100g": 55 },
+  { "source": "Usda", "name": "Bal", "caloriesPer100g": 304, "proteinPer100g": 0.3, "carbPer100g": 82, "fatPer100g": 0, "sugarPer100g": 82, "sodiumMgPer100g": 4 },
+  { "source": "Usda", "name": "Mercimek (pişmiş)", "caloriesPer100g": 116, "proteinPer100g": 9, "carbPer100g": 20, "fatPer100g": 0.4, "fiberPer100g": 7.9, "sugarPer100g": 1.8, "sodiumMgPer100g": 2 },
+  { "source": "Usda", "name": "Nohut (pişmiş)", "caloriesPer100g": 164, "proteinPer100g": 8.9, "carbPer100g": 27, "fatPer100g": 2.6, "fiberPer100g": 7.6, "sugarPer100g": 4.8, "sodiumMgPer100g": 7 },
+  { "source": "Usda", "name": "Siyah fasulye (pişmiş)", "caloriesPer100g": 132, "proteinPer100g": 8.9, "carbPer100g": 24, "fatPer100g": 0.5, "fiberPer100g": 8.7, "sugarPer100g": 0.3, "sodiumMgPer100g": 1 },
+
+  {
+    "source": "Usda", "name": "Muz", "caloriesPer100g": 89, "proteinPer100g": 1.1, "carbPer100g": 23, "fatPer100g": 0.3, "fiberPer100g": 2.6, "sugarPer100g": 12, "sodiumMgPer100g": 1,
+    "micronutrients": [ { "code": "POTASSIUM", "amountPer100g": 358, "unit": "MG" }, { "code": "VITAMIN_C", "amountPer100g": 8.7, "unit": "MG" }, { "code": "MAGNESIUM", "amountPer100g": 27, "unit": "MG" } ]
+  },
+  { "source": "Usda", "name": "Elma (kabuklu)", "caloriesPer100g": 52, "proteinPer100g": 0.3, "carbPer100g": 14, "fatPer100g": 0.2, "fiberPer100g": 2.4, "sugarPer100g": 10, "sodiumMgPer100g": 1 },
+  {
+    "source": "Usda", "name": "Portakal", "caloriesPer100g": 47, "proteinPer100g": 0.9, "carbPer100g": 12, "fatPer100g": 0.1, "fiberPer100g": 2.4, "sugarPer100g": 9, "sodiumMgPer100g": 0,
+    "micronutrients": [ { "code": "VITAMIN_C", "amountPer100g": 53, "unit": "MG" }, { "code": "POTASSIUM", "amountPer100g": 181, "unit": "MG" }, { "code": "CALCIUM", "amountPer100g": 40, "unit": "MG" } ]
+  },
+  { "source": "Usda", "name": "Avokado", "caloriesPer100g": 160, "proteinPer100g": 2, "carbPer100g": 8.5, "fatPer100g": 15, "fiberPer100g": 6.7, "sugarPer100g": 0.7, "sodiumMgPer100g": 7 },
+  { "source": "Usda", "name": "Brokoli (çiğ)", "caloriesPer100g": 34, "proteinPer100g": 2.8, "carbPer100g": 7, "fatPer100g": 0.4, "fiberPer100g": 2.6, "sugarPer100g": 1.7, "sodiumMgPer100g": 33 },
+  {
+    "source": "Usda", "name": "Ispanak (çiğ)", "caloriesPer100g": 23, "proteinPer100g": 2.9, "carbPer100g": 3.6, "fatPer100g": 0.4, "fiberPer100g": 2.2, "sugarPer100g": 0.4, "sodiumMgPer100g": 79,
+    "micronutrients": [ { "code": "IRON", "amountPer100g": 2.7, "unit": "MG" }, { "code": "CALCIUM", "amountPer100g": 99, "unit": "MG" }, { "code": "VITAMIN_C", "amountPer100g": 28, "unit": "MG" }, { "code": "POTASSIUM", "amountPer100g": 558, "unit": "MG" } ]
+  },
+  { "source": "Usda", "name": "Havuç (çiğ)", "caloriesPer100g": 41, "proteinPer100g": 0.9, "carbPer100g": 10, "fatPer100g": 0.2, "fiberPer100g": 2.8, "sugarPer100g": 4.7, "sodiumMgPer100g": 69 },
+  { "source": "Usda", "name": "Domates (çiğ)", "caloriesPer100g": 18, "proteinPer100g": 0.9, "carbPer100g": 3.9, "fatPer100g": 0.2, "fiberPer100g": 1.2, "sugarPer100g": 2.6, "sodiumMgPer100g": 5 },
+
+  { "source": "Usda", "name": "Zeytinyağı", "caloriesPer100g": 884, "proteinPer100g": 0, "carbPer100g": 0, "fatPer100g": 100, "sodiumMgPer100g": 2 },
+  { "source": "Usda", "name": "Tereyağı (tuzlu)", "caloriesPer100g": 717, "proteinPer100g": 0.9, "carbPer100g": 0.1, "fatPer100g": 81, "sugarPer100g": 0.1, "sodiumMgPer100g": 643 },
+  {
+    "source": "Usda", "name": "Badem (çiğ)", "caloriesPer100g": 579, "proteinPer100g": 21, "carbPer100g": 22, "fatPer100g": 50, "fiberPer100g": 12.5, "sugarPer100g": 4.4, "sodiumMgPer100g": 1,
+    "micronutrients": [ { "code": "MAGNESIUM", "amountPer100g": 270, "unit": "MG" }, { "code": "CALCIUM", "amountPer100g": 269, "unit": "MG" }, { "code": "ZINC", "amountPer100g": 3.1, "unit": "MG" } ]
+  },
+  { "source": "Usda", "name": "Ceviz", "caloriesPer100g": 654, "proteinPer100g": 15, "carbPer100g": 14, "fatPer100g": 65, "fiberPer100g": 6.7, "sugarPer100g": 2.6, "sodiumMgPer100g": 2 },
+  { "source": "Usda", "name": "Fıstık ezmesi", "caloriesPer100g": 588, "proteinPer100g": 25, "carbPer100g": 20, "fatPer100g": 50, "fiberPer100g": 6, "sugarPer100g": 9, "sodiumMgPer100g": 17 },
+  {
+    "source": "Usda", "name": "Süt (tam yağlı)", "caloriesPer100g": 61, "proteinPer100g": 3.2, "carbPer100g": 4.8, "fatPer100g": 3.3, "sugarPer100g": 5.1, "sodiumMgPer100g": 43,
+    "micronutrients": [ { "code": "CALCIUM", "amountPer100g": 113, "unit": "MG" }, { "code": "POTASSIUM", "amountPer100g": 132, "unit": "MG" } ]
+  },
+  { "source": "Usda", "name": "Süt (yağsız)", "caloriesPer100g": 34, "proteinPer100g": 3.4, "carbPer100g": 5, "fatPer100g": 0.1, "sugarPer100g": 5, "sodiumMgPer100g": 42 },
+  { "source": "Usda", "name": "Kaşar peyniri", "caloriesPer100g": 403, "proteinPer100g": 25, "carbPer100g": 1.3, "fatPer100g": 33, "sugarPer100g": 0.5, "sodiumMgPer100g": 621 },
+
+  { "source": "OpenFoodFacts", "externalCode": "3017620422003", "name": "Nutella", "brand": "Ferrero", "caloriesPer100g": 539, "proteinPer100g": 6.3, "carbPer100g": 57.5, "fatPer100g": 30.9, "sugarPer100g": 56.3, "sodiumMgPer100g": 43 },
+  { "source": "OpenFoodFacts", "externalCode": "5449000000996", "name": "Coca-Cola", "brand": "Coca-Cola", "caloriesPer100g": 42, "proteinPer100g": 0, "carbPer100g": 10.6, "fatPer100g": 0, "sugarPer100g": 10.6, "sodiumMgPer100g": 0 },
+  { "source": "OpenFoodFacts", "externalCode": "5000112548167", "name": "Domates Ketçabı", "brand": "Heinz", "caloriesPer100g": 102, "proteinPer100g": 1.2, "carbPer100g": 23.2, "fatPer100g": 0.1, "sugarPer100g": 20, "sodiumMgPer100g": 900 }
+]
