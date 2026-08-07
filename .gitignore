@@ -17,3 +17,6 @@ web-build/
 # Editör/OS
 .DS_Store
 Thumbs.db
+
+# Claude Code yerel/makineye özel ayarlar
+.claude/
