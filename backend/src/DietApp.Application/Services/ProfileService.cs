@@ -62,6 +62,48 @@ public class ProfileService(
         return MapToDto(profile, nutritionGoal);
     }
 
+    public async Task<ProfileDto> SetCustomNutritionGoalAsync(Guid userId, SetCustomNutritionGoalRequest request, CancellationToken ct = default)
+    {
+        ValidateCustomGoal(request);
+
+        var profile = await profileRepository.GetByUserIdAsync(userId, ct)
+            ?? throw new ValidationException("Önce onboarding tamamlanmalı.");
+
+        var nutritionGoal = new NutritionGoal
+        {
+            Id = Guid.NewGuid(),
+            UserId = userId,
+            DailyCalories = request.DailyCalories,
+            ProteinG = request.ProteinG,
+            CarbG = request.CarbG,
+            FatG = request.FatG,
+            EffectiveFrom = DateTime.UtcNow,
+            CreatedAt = DateTime.UtcNow,
+        };
+
+        await nutritionGoalRepository.AddAsync(nutritionGoal, ct);
+
+        return MapToDto(profile, nutritionGoal);
+    }
+
+    private static void ValidateCustomGoal(SetCustomNutritionGoalRequest request)
+    {
+        if (request.DailyCalories is < 800 or > 6000)
+        {
+            throw new ValidationException("Günlük kalori 800-6000 aralığında olmalı.");
+        }
+
+        if (request.ProteinG < 0 || request.CarbG < 0 || request.FatG < 0)
+        {
+            throw new ValidationException("Makro değerleri negatif olamaz.");
+        }
+
+        if (request.ProteinG > 500 || request.CarbG > 900 || request.FatG > 400)
+        {
+            throw new ValidationException("Girilen makro değerleri gerçekçi aralığın dışında.");
+        }
+    }
+
     private static void Validate(OnboardingRequest request)
     {
         if (request.HeightCm is < 100 or > 250)

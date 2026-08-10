@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react';
-import { Text, View } from 'react-native';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 import { Screen } from '@/components/Screen';
 import { Button } from '@/components/Button';
@@ -10,9 +11,9 @@ import { OptionCard } from '@/components/OptionCard';
 import { DateField } from '@/components/DateField';
 import { useTheme } from '@/theme/ThemeProvider';
 import { profileApi } from '@/api/profileApi';
-import { profileQueryKey } from '@/hooks/useProfile';
+import { profileQueryKey, useProfile } from '@/hooks/useProfile';
 import { ActivityLevel, Gender, Goal } from '@/api/types';
-import { toDateOnlyString } from '@/utils/date';
+import { fromDateOnlyString, toDateOnlyString } from '@/utils/date';
 import { getApiErrorMessage } from '@/utils/apiError';
 
 const GENDER_OPTIONS: { value: Gender; label: string }[] = [
@@ -41,6 +42,9 @@ export default function OnboardingScreen() {
   const { colors, spacing } = useTheme();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const profileQuery = useProfile(true);
+  const isEditMode = useRef(false);
+  const prefilled = useRef(false);
 
   const [step, setStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -52,6 +56,23 @@ export default function OnboardingScreen() {
   const [goal, setGoal] = useState<Goal | null>(null);
   const [activityLevel, setActivityLevel] = useState<ActivityLevel | null>(null);
   const [goalWeightKg, setGoalWeightKg] = useState('');
+
+  useEffect(() => {
+    if (prefilled.current || !profileQuery.data) {
+      return;
+    }
+
+    const p = profileQuery.data;
+    setGender(p.gender);
+    setBirthDate(fromDateOnlyString(p.birthDate));
+    setHeightCm(String(p.heightCm));
+    setWeightKg(String(p.weightKg));
+    setGoal(p.goal);
+    setActivityLevel(p.activityLevel);
+    setGoalWeightKg(p.goalWeightKg != null ? String(p.goalWeightKg) : '');
+    isEditMode.current = true;
+    prefilled.current = true;
+  }, [profileQuery.data]);
 
   const stepKeys = useMemo(() => {
     const base = ['gender', 'birthDate', 'body', 'goal', 'activity'];
@@ -68,7 +89,11 @@ export default function OnboardingScreen() {
     mutationFn: profileApi.completeOnboarding,
     onSuccess: (profile) => {
       queryClient.setQueryData(profileQueryKey, profile);
-      router.replace('/home');
+      if (isEditMode.current && router.canGoBack()) {
+        router.back();
+      } else {
+        router.replace('/home');
+      }
     },
   });
 
@@ -129,8 +154,26 @@ export default function OnboardingScreen() {
     setStep((s) => Math.max(0, s - 1));
   };
 
+  if (profileQuery.isLoading) {
+    return (
+      <Screen>
+        <ActivityIndicator color={colors.primary} style={{ marginTop: spacing.xl }} />
+      </Screen>
+    );
+  }
+
   return (
     <Screen>
+      {isEditMode.current && (
+        <Pressable
+          onPress={() => (router.canGoBack() ? router.back() : router.replace('/home'))}
+          style={{ flexDirection: 'row', alignItems: 'center', marginBottom: spacing.md }}
+        >
+          <Ionicons name="close" size={22} color={colors.textPrimary} />
+          <Text style={{ color: colors.textPrimary, fontSize: 16, marginLeft: 4 }}>Vazgeç</Text>
+        </Pressable>
+      )}
+
       <View style={{ flexDirection: 'row', gap: 6, marginBottom: spacing.lg }}>
         {stepKeys.map((key, index) => (
           <View
@@ -258,7 +301,7 @@ export default function OnboardingScreen() {
         )}
         <View style={{ flex: 1 }}>
           <Button
-            title={isLastStep ? 'Tamamla' : 'İleri'}
+            title={isLastStep ? (isEditMode.current ? 'Kaydet' : 'Tamamla') : 'İleri'}
             loading={onboardingMutation.isPending}
             onPress={goNext}
           />

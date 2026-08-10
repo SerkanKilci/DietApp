@@ -44,7 +44,9 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 
     if (!hasProfile && !onOnboardingScreen) {
       router.replace('/onboarding');
-    } else if (hasProfile && (inAuthGroup || onOnboardingScreen)) {
+    } else if (hasProfile && inAuthGroup) {
+      // Not: onOnboardingScreen burada bilerek yok — profili varken kullanıcı Profil
+      // sekmesinden "Profilimi güncelle" ile /onboarding'e bilerek gidebilmeli, geri atılmamalı.
       router.replace('/home');
     }
   }, [isHydrated, accessToken, segments, router, profileQuery.isFetched, profileQuery.data]);

@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, Text, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
 
 import { Screen } from '@/components/Screen';
@@ -16,16 +16,26 @@ const SOURCE_LABELS: Record<FoodSource, string> = {
   UserCreated: 'Kendi yemeğim',
 };
 
+const PAGE_SIZE = 30;
+
 export default function DiaryScreen() {
   const { colors, spacing } = useTheme();
   const router = useRouter();
   const [query, setQuery] = useState('');
   const debouncedQuery = useDebouncedValue(query, 300);
 
-  const searchQuery = useQuery({
+  const searchQuery = useInfiniteQuery({
     queryKey: ['foods', 'search', debouncedQuery],
-    queryFn: () => foodApi.search(debouncedQuery),
+    queryFn: ({ pageParam }) => foodApi.search(debouncedQuery, pageParam, PAGE_SIZE),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const loadedCount = lastPage.page * lastPage.pageSize;
+      return loadedCount < lastPage.totalCount ? lastPage.page + 1 : undefined;
+    },
   });
+
+  const items = useMemo(() => searchQuery.data?.pages.flatMap((page) => page.items) ?? [], [searchQuery.data]);
+  const totalCount = searchQuery.data?.pages[0]?.totalCount ?? 0;
 
   const renderItem = ({ item }: { item: FoodListItemDto }) => (
     <Pressable
@@ -74,7 +84,7 @@ export default function DiaryScreen() {
           flexDirection: 'row',
           alignItems: 'center',
           marginTop: spacing.md,
-          marginBottom: spacing.sm,
+          marginBottom: spacing.xs,
           borderWidth: 1,
           borderColor: colors.border,
           borderRadius: 12,
@@ -86,19 +96,36 @@ export default function DiaryScreen() {
         <TextInput
           value={query}
           onChangeText={setQuery}
-          placeholder="Besin ara..."
+          placeholder="Besin ara... (örn. chicken, elma, nutella)"
           placeholderTextColor={colors.textSecondary}
           style={{ flex: 1, paddingVertical: spacing.sm + 2, paddingHorizontal: spacing.sm, color: colors.textPrimary }}
         />
       </View>
 
+      {totalCount > 0 && (
+        <Text style={{ color: colors.textSecondary, fontSize: 12, marginBottom: spacing.sm }}>
+          {totalCount.toLocaleString('tr-TR')} sonuç
+        </Text>
+      )}
+
       {searchQuery.isLoading ? (
         <ActivityIndicator color={colors.primary} style={{ marginTop: spacing.lg }} />
       ) : (
         <FlatList
-          data={searchQuery.data?.items ?? []}
+          data={items}
           keyExtractor={(item) => item.id}
           renderItem={renderItem}
+          onEndReachedThreshold={0.4}
+          onEndReached={() => {
+            if (searchQuery.hasNextPage && !searchQuery.isFetchingNextPage) {
+              searchQuery.fetchNextPage();
+            }
+          }}
+          ListFooterComponent={
+            searchQuery.isFetchingNextPage ? (
+              <ActivityIndicator color={colors.primary} style={{ marginVertical: spacing.md }} />
+            ) : null
+          }
           ListEmptyComponent={
             <Text style={{ color: colors.textSecondary, marginTop: spacing.lg, textAlign: 'center' }}>
               Sonuç bulunamadı. Sağ üstteki + ile kendi yemeğini ekleyebilirsin.

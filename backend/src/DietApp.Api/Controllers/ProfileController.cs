@@ -29,4 +29,17 @@ public class ProfileController(IProfileService profileService) : ApiControllerBa
             return Problem(title: ex.Message, statusCode: StatusCodes.Status400BadRequest);
         }
     }
+
+    [HttpPut("nutrition-goal")]
+    public async Task<ActionResult<ProfileDto>> SetCustomNutritionGoal(SetCustomNutritionGoalRequest request, CancellationToken ct)
+    {
+        try
+        {
+            return await profileService.SetCustomNutritionGoalAsync(CurrentUserId, request, ct);
+        }
+        catch (ValidationException ex)
+        {
+            return Problem(title: ex.Message, statusCode: StatusCodes.Status400BadRequest);
+        }
+    }
 }

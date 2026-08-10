@@ -6,4 +6,5 @@ public interface IProfileService
 {
     Task<ProfileDto?> GetProfileAsync(Guid userId, CancellationToken ct = default);
     Task<ProfileDto> CompleteOnboardingAsync(Guid userId, OnboardingRequest request, CancellationToken ct = default);
+    Task<ProfileDto> SetCustomNutritionGoalAsync(Guid userId, SetCustomNutritionGoalRequest request, CancellationToken ct = default);
 }

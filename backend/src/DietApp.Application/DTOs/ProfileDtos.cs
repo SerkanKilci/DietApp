@@ -13,6 +13,9 @@ public record OnboardingRequest(
 
 public record NutritionGoalDto(int DailyCalories, int ProteinG, int CarbG, int FatG, DateTime EffectiveFrom);
 
+/// <summary>Kullanıcı, otomatik hesaplanan hedefi beğenmeyip kendi kalori/makro hedefini elle girebilir.</summary>
+public record SetCustomNutritionGoalRequest(int DailyCalories, int ProteinG, int CarbG, int FatG);
+
 public record ProfileDto(
     int HeightCm,
     decimal WeightKg,

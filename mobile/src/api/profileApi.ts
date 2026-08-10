@@ -1,7 +1,7 @@
 import { isAxiosError } from 'axios';
 
 import { apiClient } from './client';
-import { OnboardingRequest, ProfileDto } from './types';
+import { OnboardingRequest, ProfileDto, SetCustomNutritionGoalRequest } from './types';
 
 export const profileApi = {
   // Onboarding hiç tamamlanmamışsa backend 404 döner; bunu hata değil "profil yok" olarak ele alıyoruz.
@@ -18,4 +18,6 @@ export const profileApi = {
   },
   completeOnboarding: (payload: OnboardingRequest) =>
     apiClient.post<ProfileDto>('/api/profile/onboarding', payload).then((res) => res.data),
+  setCustomNutritionGoal: (payload: SetCustomNutritionGoalRequest) =>
+    apiClient.put<ProfileDto>('/api/profile/nutrition-goal', payload).then((res) => res.data),
 };

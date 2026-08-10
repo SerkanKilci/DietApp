@@ -68,6 +68,13 @@ export interface ProfileDto {
   nutritionGoal: NutritionGoalDto;
 }
 
+export interface SetCustomNutritionGoalRequest {
+  dailyCalories: number;
+  proteinG: number;
+  carbG: number;
+  fatG: number;
+}
+
 export type FoodSource = 'Usda' | 'OpenFoodFacts' | 'UserCreated';
 
 export interface FoodListItemDto {
