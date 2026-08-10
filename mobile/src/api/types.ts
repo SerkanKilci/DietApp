@@ -147,6 +147,7 @@ export interface MealEntryItemDto {
   proteinTotal: number;
   carbTotal: number;
   fatTotal: number;
+  isAiEstimated: boolean;
 }
 
 export interface MealGroupDto {
@@ -167,4 +168,24 @@ export interface DailySummaryDto {
   consumedFat: number;
   remainingCalories: number;
   meals: MealGroupDto[];
+}
+
+export interface AnalyzePlateResponse {
+  analysisId: string;
+  description: string;
+  estimatedCalories: number;
+  proteinG: number;
+  carbG: number;
+  fatG: number;
+}
+
+export interface AddAiEstimateToMealRequest {
+  logDate: string;
+  mealType: MealType;
+  aiPlateAnalysisId: string;
+  description: string;
+  calories: number;
+  proteinG: number;
+  carbG: number;
+  fatG: number;
 }

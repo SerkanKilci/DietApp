@@ -7,6 +7,7 @@ using DietApp.Infrastructure.Nutrition;
 using DietApp.Infrastructure.Persistence;
 using DietApp.Infrastructure.Repositories;
 using DietApp.Infrastructure.Security;
+using DietApp.Infrastructure.Vision;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,9 +24,11 @@ public static class DependencyInjection
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
         services.Configure<GoogleAuthOptions>(configuration.GetSection(GoogleAuthOptions.SectionName));
         services.Configure<AppleAuthOptions>(configuration.GetSection(AppleAuthOptions.SectionName));
+        services.Configure<OpenAiOptions>(configuration.GetSection(OpenAiOptions.SectionName));
 
         services.AddMemoryCache();
         services.AddHttpClient(nameof(AppleTokenValidator));
+        services.AddHttpClient(nameof(OpenAiVisionService), client => client.Timeout = TimeSpan.FromSeconds(60));
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
@@ -34,10 +37,12 @@ public static class DependencyInjection
         services.AddScoped<IFoodItemRepository, FoodItemRepository>();
         services.AddScoped<IMealEntryRepository, MealEntryRepository>();
         services.AddScoped<IMealEntryItemRepository, MealEntryItemRepository>();
+        services.AddScoped<IAiPlateAnalysisRepository, AiPlateAnalysisRepository>();
 
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
         services.AddSingleton<IJwtTokenService, JwtTokenService>();
         services.AddSingleton<INutritionCalculatorService, NutritionCalculatorService>();
+        services.AddScoped<IVisionAnalysisService, OpenAiVisionService>();
 
         services.AddKeyedScoped<IExternalTokenValidator, GoogleTokenValidator>(ExternalLoginProvider.Google);
         services.AddKeyedScoped<IExternalTokenValidator, AppleTokenValidator>(ExternalLoginProvider.Apple);
@@ -46,6 +51,7 @@ public static class DependencyInjection
         services.AddScoped<IProfileService, ProfileService>();
         services.AddScoped<IFoodService, FoodService>();
         services.AddScoped<IMealDiaryService, MealDiaryService>();
+        services.AddScoped<IAiPlateService, AiPlateService>();
 
         return services;
     }

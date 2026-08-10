@@ -12,7 +12,8 @@ public record MealEntryItemDto(
     decimal CaloriesTotal,
     decimal ProteinTotal,
     decimal CarbTotal,
-    decimal FatTotal);
+    decimal FatTotal,
+    bool IsAiEstimated);
 
 public record MealGroupDto(MealType MealType, IReadOnlyList<MealEntryItemDto> Items, decimal TotalCalories);
 

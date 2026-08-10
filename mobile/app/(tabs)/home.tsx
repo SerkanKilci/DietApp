@@ -1,5 +1,6 @@
 import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 import { Screen } from '@/components/Screen';
@@ -43,9 +44,24 @@ function MealSection({ group, onDeleteItem }: { group: MealGroupDto; onDeleteIte
             }}
           >
             <View style={{ flex: 1 }}>
-              <Text style={{ color: colors.textPrimary, fontWeight: '600' }}>{item.foodName}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={{ color: colors.textPrimary, fontWeight: '600' }}>{item.foodName}</Text>
+                {item.isAiEstimated ? (
+                  <View
+                    style={{
+                      marginLeft: spacing.xs,
+                      paddingHorizontal: 6,
+                      paddingVertical: 1,
+                      borderRadius: 6,
+                      backgroundColor: colors.primary + '22',
+                    }}
+                  >
+                    <Text style={{ color: colors.primary, fontSize: 10, fontWeight: '700' }}>AI</Text>
+                  </View>
+                ) : null}
+              </View>
               <Text style={{ color: colors.textSecondary, fontSize: 12, marginTop: 1 }}>
-                {item.quantityG} g · {Math.round(item.caloriesTotal)} kcal
+                {item.isAiEstimated ? 'AI tahmini' : `${item.quantityG} g`} · {Math.round(item.caloriesTotal)} kcal
               </Text>
             </View>
             <Pressable onPress={() => onDeleteItem(item.id)} hitSlop={8}>
@@ -60,6 +76,7 @@ function MealSection({ group, onDeleteItem }: { group: MealGroupDto; onDeleteIte
 
 export default function HomeScreen() {
   const { colors, spacing } = useTheme();
+  const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const queryClient = useQueryClient();
   const today = todayDateString();
@@ -75,9 +92,24 @@ export default function HomeScreen() {
 
   return (
     <Screen>
-      <Text style={{ fontSize: 24, fontWeight: '700', color: colors.textPrimary }}>
-        Merhaba{user ? `, ${user.displayName}` : ''}
-      </Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Text style={{ fontSize: 24, fontWeight: '700', color: colors.textPrimary }}>
+          Merhaba{user ? `, ${user.displayName}` : ''}
+        </Text>
+        <Pressable
+          onPress={() => router.push('/scan')}
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: 22,
+            backgroundColor: colors.primary,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Ionicons name="camera-outline" size={22} color="#FFFFFF" />
+        </Pressable>
+      </View>
 
       {summaryQuery.isLoading ? (
         <ActivityIndicator color={colors.primary} style={{ marginTop: spacing.lg }} />

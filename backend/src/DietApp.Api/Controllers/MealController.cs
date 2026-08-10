@@ -36,6 +36,19 @@ public class MealController(IMealDiaryService mealDiaryService) : ApiControllerB
         }
     }
 
+    [HttpPost("items/from-ai")]
+    public async Task<ActionResult<MealEntryItemDto>> AddAiEstimate(AddAiEstimateToMealRequest request, CancellationToken ct)
+    {
+        try
+        {
+            return await mealDiaryService.AddAiEstimateAsync(CurrentUserId, request, ct);
+        }
+        catch (ValidationException ex)
+        {
+            return Problem(title: ex.Message, statusCode: StatusCodes.Status400BadRequest);
+        }
+    }
+
     [HttpDelete("items/{id:guid}")]
     public async Task<IActionResult> DeleteItem(Guid id, CancellationToken ct)
     {

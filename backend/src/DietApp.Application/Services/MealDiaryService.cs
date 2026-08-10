@@ -10,7 +10,8 @@ public class MealDiaryService(
     IMealEntryRepository mealEntryRepository,
     IMealEntryItemRepository mealEntryItemRepository,
     IFoodItemRepository foodItemRepository,
-    INutritionGoalRepository nutritionGoalRepository) : IMealDiaryService
+    INutritionGoalRepository nutritionGoalRepository,
+    IAiPlateAnalysisRepository aiPlateAnalysisRepository) : IMealDiaryService
 {
     public async Task<MealEntryItemDto> AddItemAsync(Guid userId, AddMealItemRequest request, CancellationToken ct = default)
     {
@@ -47,7 +48,51 @@ public class MealDiaryService(
 
         await mealEntryItemRepository.AddAsync(item, ct);
 
-        return new MealEntryItemDto(item.Id, food.Id, food.Name, item.QuantityG, item.CaloriesTotal, item.ProteinTotal, item.CarbTotal, item.FatTotal);
+        return new MealEntryItemDto(item.Id, food.Id, food.Name, item.QuantityG, item.CaloriesTotal, item.ProteinTotal, item.CarbTotal, item.FatTotal, false);
+    }
+
+    public async Task<MealEntryItemDto> AddAiEstimateAsync(Guid userId, AddAiEstimateToMealRequest request, CancellationToken ct = default)
+    {
+        var analysis = await aiPlateAnalysisRepository.GetByIdAsync(request.AiPlateAnalysisId, ct);
+        if (analysis is null || analysis.UserId != userId)
+        {
+            throw new ValidationException("AI analizi bulunamadı.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Description))
+        {
+            throw new ValidationException("Açıklama gerekli.");
+        }
+
+        if (request.Calories is < 0 or > 6000 || request.ProteinG < 0 || request.CarbG < 0 || request.FatG < 0)
+        {
+            throw new ValidationException("Girilen değerler geçerli aralığın dışında.");
+        }
+
+        var mealEntry = await mealEntryRepository.GetOrCreateAsync(userId, request.LogDate, request.MealType, ct);
+
+        var item = new MealEntryItem
+        {
+            Id = Guid.NewGuid(),
+            MealEntryId = mealEntry.Id,
+            FoodItemId = null,
+            // Kullanıcının onayladığı (düzenlenmiş olabilecek) açıklama ve değerler saklanır —
+            // AiPlateAnalysis'teki ham tahmin denetim/kota amaçlı ayrı kalır, değişmez.
+            CustomDescription = request.Description,
+            // AI tahmini tek bir tabak/porsiyon için — gram bazlı değil, bu yüzden nominal 1 porsiyon.
+            QuantityG = 1,
+            CaloriesTotal = request.Calories,
+            ProteinTotal = request.ProteinG,
+            CarbTotal = request.CarbG,
+            FatTotal = request.FatG,
+            IsAiEstimated = true,
+            CreatedAt = DateTime.UtcNow,
+        };
+
+        await mealEntryItemRepository.AddAsync(item, ct);
+
+        return new MealEntryItemDto(
+            item.Id, null, item.CustomDescription, item.QuantityG, item.CaloriesTotal, item.ProteinTotal, item.CarbTotal, item.FatTotal, true);
     }
 
     public async Task<DailySummaryDto> GetDailySummaryAsync(Guid userId, DateOnly logDate, CancellationToken ct = default)
@@ -63,7 +108,7 @@ public class MealDiaryService(
             var itemDtos = entriesByType.TryGetValue(mealType, out var entry)
                 ? entry.Items.Select(i => new MealEntryItemDto(
                     i.Id, i.FoodItemId, i.FoodItem?.Name ?? i.CustomDescription ?? "Bilinmeyen besin",
-                    i.QuantityG, i.CaloriesTotal, i.ProteinTotal, i.CarbTotal, i.FatTotal)).ToList()
+                    i.QuantityG, i.CaloriesTotal, i.ProteinTotal, i.CarbTotal, i.FatTotal, i.IsAiEstimated)).ToList()
                 : [];
 
             return new MealGroupDto(mealType, itemDtos, itemDtos.Sum(i => i.CaloriesTotal));

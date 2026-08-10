@@ -18,6 +18,7 @@ public class DietAppDbContext : DbContext
     public DbSet<FoodMicronutrient> FoodMicronutrients => Set<FoodMicronutrient>();
     public DbSet<MealEntry> MealEntries => Set<MealEntry>();
     public DbSet<MealEntryItem> MealEntryItems => Set<MealEntryItem>();
+    public DbSet<AiPlateAnalysis> AiPlateAnalyses => Set<AiPlateAnalysis>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
