@@ -189,3 +189,8 @@ export interface AddAiEstimateToMealRequest {
   carbG: number;
   fatG: number;
 }
+
+export interface SubscriptionStatusDto {
+  isPremium: boolean;
+  expiresAt: string | null;
+}

@@ -59,6 +59,7 @@
   },
   "home": {
     "greeting": "Hallo",
+    "scanCta": "Mit KI analysieren",
     "notAdded": "Noch nichts hinzugefügt.",
     "aiTag": "KI",
     "aiEstimateLabel": "KI-Schätzung",
@@ -156,6 +157,7 @@
     "languageEn": "English",
     "languageFr": "Français",
     "languageDe": "Deutsch",
+    "upgradeToPremium": "Auf Premium upgraden",
     "units": "Einheitensystem",
     "unitsMetric": "Metrisch (kg/cm)",
     "unitsImperial": "Imperial (lb/ft)",
@@ -181,6 +183,7 @@
     "AgeRange": "Das Alter muss zwischen 13 und 100 Jahren liegen.",
     "AiDailyQuotaReached": "Du hast dein tägliches KI-Analyse-Limit ({{quota}}) erreicht, versuche es morgen erneut.",
     "ImageEmpty": "Das Bild ist leer.",
+    "PremiumRequired": "Diese Funktion erfordert ein Premium-Abonnement.",
     "ImageRequired": "Ein Bild ist erforderlich.",
     "ImageTooLarge": "Das Bild ist zu groß (max. 8 MB).",
     "UnsupportedImageFormat": "Nicht unterstütztes Bildformat (muss jpeg/png/webp sein).",
@@ -189,6 +192,19 @@
     "InvalidCredentials": "E-Mail oder Passwort falsch.",
     "InvalidExternalToken": "Anbieter-Token konnte nicht überprüft werden.",
     "InvalidRefreshToken": "Refresh-Token ist ungültig oder abgelaufen."
+  },
+  "paywall": {
+    "title": "DietApp Premium",
+    "subtitle": "Erhalte sofortige KI-Kalorien- und Makroschätzungen von einem Foto deines Tellers.",
+    "featureAiScan": "Unbegrenzte KI-Tabakanalyse",
+    "featureOneTap": "Mit einem Tipp zu deinem Tagebuch hinzufügen",
+    "restorePurchases": "Käufe wiederherstellen",
+    "webUnavailable": "Käufe sind nur in der mobilen App verfügbar.",
+    "loadFailed": "Abo-Optionen konnten nicht geladen werden.",
+    "noOfferings": "Derzeit ist kein Abo-Paket verfügbar.",
+    "purchaseError": "Kauf fehlgeschlagen, bitte versuche es erneut.",
+    "alreadyPremium": "Du bist bereits Premium-Mitglied.",
+    "close": "Schließen"
   },
   "deleteAccount": {
     "title": "Konto löschen",

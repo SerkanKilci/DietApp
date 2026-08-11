@@ -101,21 +101,25 @@ export default function HomeScreen() {
   return (
     <Screen>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Text style={{ fontSize: 24, fontWeight: '700', color: colors.textPrimary }}>
+        <Text
+          numberOfLines={1}
+          style={{ flexShrink: 1, marginRight: spacing.sm, fontSize: 24, fontWeight: '700', color: colors.textPrimary }}
+        >
           {t('home.greeting')}{user ? `, ${user.displayName}` : ''}
         </Text>
         <Pressable
           onPress={() => router.push('/scan')}
           style={{
-            width: 44,
-            height: 44,
-            borderRadius: 22,
-            backgroundColor: colors.primary,
+            flexDirection: 'row',
             alignItems: 'center',
-            justifyContent: 'center',
+            paddingVertical: spacing.sm,
+            paddingHorizontal: spacing.sm + 2,
+            borderRadius: 999,
+            backgroundColor: colors.primary,
           }}
         >
-          <Ionicons name="camera-outline" size={22} color="#FFFFFF" />
+          <Ionicons name="camera-outline" size={18} color="#FFFFFF" />
+          <Text style={{ color: '#FFFFFF', fontWeight: '600', fontSize: 13, marginLeft: 6 }}>{t('home.scanCta')}</Text>
         </Pressable>
       </View>
 

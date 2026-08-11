@@ -20,6 +20,7 @@ public class DietAppDbContext : DbContext
     public DbSet<MealEntry> MealEntries => Set<MealEntry>();
     public DbSet<MealEntryItem> MealEntryItems => Set<MealEntryItem>();
     public DbSet<AiPlateAnalysis> AiPlateAnalyses => Set<AiPlateAnalysis>();
+    public DbSet<Subscription> Subscriptions => Set<Subscription>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

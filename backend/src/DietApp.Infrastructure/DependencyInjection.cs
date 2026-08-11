@@ -6,6 +6,7 @@ using DietApp.Infrastructure.ExternalAuth;
 using DietApp.Infrastructure.Nutrition;
 using DietApp.Infrastructure.Persistence;
 using DietApp.Infrastructure.Repositories;
+using DietApp.Infrastructure.RevenueCat;
 using DietApp.Infrastructure.Security;
 using DietApp.Infrastructure.Vision;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,7 @@ public static class DependencyInjection
         services.Configure<GoogleAuthOptions>(configuration.GetSection(GoogleAuthOptions.SectionName));
         services.Configure<AppleAuthOptions>(configuration.GetSection(AppleAuthOptions.SectionName));
         services.Configure<OpenAiOptions>(configuration.GetSection(OpenAiOptions.SectionName));
+        services.Configure<RevenueCatOptions>(configuration.GetSection(RevenueCatOptions.SectionName));
 
         services.AddMemoryCache();
         services.AddHttpClient(nameof(AppleTokenValidator));
@@ -38,6 +40,7 @@ public static class DependencyInjection
         services.AddScoped<IMealEntryRepository, MealEntryRepository>();
         services.AddScoped<IMealEntryItemRepository, MealEntryItemRepository>();
         services.AddScoped<IAiPlateAnalysisRepository, AiPlateAnalysisRepository>();
+        services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
         services.AddSingleton<IJwtTokenService, JwtTokenService>();
@@ -52,6 +55,7 @@ public static class DependencyInjection
         services.AddScoped<IFoodService, FoodService>();
         services.AddScoped<IMealDiaryService, MealDiaryService>();
         services.AddScoped<IAiPlateService, AiPlateService>();
+        services.AddScoped<ISubscriptionService, SubscriptionService>();
 
         return services;
     }

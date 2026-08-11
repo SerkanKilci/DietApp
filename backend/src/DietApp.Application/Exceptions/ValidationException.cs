@@ -18,6 +18,7 @@ public enum ValidationErrorCode
     AgeRange,
     AiDailyQuotaReached,
     ImageEmpty,
+    PremiumRequired,
 }
 
 // message: Türkçe metin log/Swagger için ProblemDetails.title'da kalır; mobil taraf bunu göstermez,

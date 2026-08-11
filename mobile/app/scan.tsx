@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import { isAxiosError } from 'axios';
 
 import { Screen } from '@/components/Screen';
 import { Button } from '@/components/Button';
@@ -91,6 +92,11 @@ export default function ScanScreen() {
       setProtein(String(data.proteinG));
       setCarb(String(data.carbG));
       setFat(String(data.fatG));
+    },
+    onError: (error) => {
+      if (isAxiosError(error) && error.response?.data?.code === 'PremiumRequired') {
+        router.push('/paywall');
+      }
     },
   });
 

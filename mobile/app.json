@@ -41,7 +41,9 @@
       "apiUrl": "http://localhost:5299",
       "googleIosClientId": "",
       "googleAndroidClientId": "",
-      "googleWebClientId": ""
+      "googleWebClientId": "",
+      "revenueCatIosApiKey": "",
+      "revenueCatAndroidApiKey": ""
     }
   }
 }

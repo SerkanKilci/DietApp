@@ -8,16 +8,20 @@ namespace DietApp.Application.Services;
 
 public class AiPlateService(
     IAiPlateAnalysisRepository repository,
-    IVisionAnalysisService visionAnalysisService) : IAiPlateService
+    IVisionAnalysisService visionAnalysisService,
+    ISubscriptionService subscriptionService) : IAiPlateService
 {
-    // Gerçek bir maliyet/abuse önlemi: her OpenAI çağrısı para. Abonelik kontrolü RevenueCat
-    // entegrasyonu ile gelene kadar (bkz. Aşama 5 notları) tek koruma bu günlük kota.
-    private const int DailyQuota = 20;
+    // Premium kontrolünden SONRA da uygulanan bir abuse/maliyet güvenlik ağı — her OpenAI çağrısı
+    // para, aboneliği olan bir hesap ele geçirilse bile günlük harcama üst sınırlı kalsın diye.
+    private const int DailyQuota = 50;
 
     public async Task<AnalyzePlateResponse> AnalyzePlateAsync(Guid userId, byte[] imageBytes, string contentType, CancellationToken ct = default)
     {
-        // TODO (RevenueCat entegrasyonu tamamlanınca): Burada Subscriptions tablosuna bakıp
-        // premium olmayan kullanıcıyı reddet. Şimdilik her giriş yapmış kullanıcı için açık.
+        if (!await subscriptionService.IsPremiumAsync(userId, ct))
+        {
+            throw new ValidationException(ValidationErrorCode.PremiumRequired, "Bu özellik premium üyelik gerektiriyor.");
+        }
+
         var usedToday = await repository.CountTodayForUserAsync(userId, ct);
         if (usedToday >= DailyQuota)
         {

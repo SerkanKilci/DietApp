@@ -45,28 +45,25 @@ public static class FoodTranslationImporter
             var batch = batches[batchIndex];
             Console.Write($"Parti {batchIndex + 1}/{batches.Count} ({batch.Length} besin)... ");
 
-            List<TranslatedItem>? translations;
             try
             {
-                translations = await TranslateBatchAsync(httpClient, model, batch);
+                var translations = await TranslateBatchAsync(httpClient, model, batch);
+                if (translations is null || translations.Count == 0)
+                {
+                    Console.WriteLine("boş yanıt, atlanıyor.");
+                    failedBatches++;
+                    continue;
+                }
+
+                var rowsWritten = await WriteTranslationsAsync(connectionString, batch, translations);
+                translatedCount += rowsWritten;
+                Console.WriteLine($"tamam ({rowsWritten} besin yazıldı).");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"HATA, atlanıyor: {ex.Message}");
                 failedBatches++;
-                continue;
             }
-
-            if (translations is null || translations.Count == 0)
-            {
-                Console.WriteLine("boş yanıt, atlanıyor.");
-                failedBatches++;
-                continue;
-            }
-
-            var rowsWritten = await WriteTranslationsAsync(connectionString, batch, translations);
-            translatedCount += rowsWritten;
-            Console.WriteLine($"tamam ({rowsWritten} besin yazıldı).");
         }
 
         var elapsed = DateTime.UtcNow - startedAt;
@@ -192,10 +189,13 @@ public static class FoodTranslationImporter
         string connectionString, PendingFoodItem[] batch, List<TranslatedItem> translations)
     {
         var table = FoodDataTables.CreateFoodItemTranslationsTable();
+        var seenIndexes = new HashSet<int>();
 
         foreach (var translated in translations)
         {
-            if (translated.Index < 0 || translated.Index >= batch.Length)
+            // Model aynı index'i iki kez döndürürse (nadir ama gerçek) (FoodItemId, LanguageCode)
+            // unique index'ini ihlal edip SqlBulkCopy'yi tamamen başarısız kılar — bu yüzden atlıyoruz.
+            if (translated.Index < 0 || translated.Index >= batch.Length || !seenIndexes.Add(translated.Index))
             {
                 continue;
             }

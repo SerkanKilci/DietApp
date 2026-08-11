@@ -59,6 +59,7 @@
   },
   "home": {
     "greeting": "Hi",
+    "scanCta": "Analyze with AI",
     "notAdded": "Nothing added yet.",
     "aiTag": "AI",
     "aiEstimateLabel": "AI estimate",
@@ -156,6 +157,7 @@
     "languageEn": "English",
     "languageFr": "Français",
     "languageDe": "Deutsch",
+    "upgradeToPremium": "Upgrade to Premium",
     "units": "Unit system",
     "unitsMetric": "Metric (kg/cm)",
     "unitsImperial": "Imperial (lb/ft)",
@@ -181,6 +183,7 @@
     "AgeRange": "Age must be between 13-100.",
     "AiDailyQuotaReached": "You've reached your daily AI analysis limit ({{quota}}), try again tomorrow.",
     "ImageEmpty": "Image is empty.",
+    "PremiumRequired": "This feature requires a premium subscription.",
     "ImageRequired": "Image is required.",
     "ImageTooLarge": "Image is too large (8MB max).",
     "UnsupportedImageFormat": "Unsupported image format (must be jpeg/png/webp).",
@@ -189,6 +192,19 @@
     "InvalidCredentials": "Incorrect email or password.",
     "InvalidExternalToken": "Couldn't verify the provider token.",
     "InvalidRefreshToken": "Refresh token is invalid or expired."
+  },
+  "paywall": {
+    "title": "DietApp Premium",
+    "subtitle": "Get instant AI-powered calorie and macro estimates from a photo of your plate.",
+    "featureAiScan": "Unlimited AI plate analysis",
+    "featureOneTap": "Add to your diary in one tap",
+    "restorePurchases": "Restore purchases",
+    "webUnavailable": "Purchases are only available in the mobile app.",
+    "loadFailed": "Couldn't load subscription options.",
+    "noOfferings": "No subscription package is currently available.",
+    "purchaseError": "Purchase failed, please try again.",
+    "alreadyPremium": "You're already a premium member.",
+    "close": "Close"
   },
   "deleteAccount": {
     "title": "Delete your account",

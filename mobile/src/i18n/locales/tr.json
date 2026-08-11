@@ -59,6 +59,7 @@
   },
   "home": {
     "greeting": "Merhaba",
+    "scanCta": "AI ile analiz et",
     "notAdded": "Henüz bir şey eklenmedi.",
     "aiTag": "AI",
     "aiEstimateLabel": "AI tahmini",
@@ -155,6 +156,7 @@
     "languageEn": "English",
     "languageFr": "Français",
     "languageDe": "Deutsch",
+    "upgradeToPremium": "Premium'a geç",
     "units": "Birim sistemi",
     "unitsMetric": "Metrik (kg/cm)",
     "unitsImperial": "İngiliz (lb/ft)",
@@ -180,6 +182,7 @@
     "AgeRange": "Yaş 13-100 aralığında olmalı.",
     "AiDailyQuotaReached": "Günlük AI analiz limitine ({{quota}}) ulaştın, yarın tekrar dene.",
     "ImageEmpty": "Görsel boş.",
+    "PremiumRequired": "Bu özellik premium üyelik gerektiriyor.",
     "ImageRequired": "Görsel gerekli.",
     "ImageTooLarge": "Görsel çok büyük (en fazla 8MB).",
     "UnsupportedImageFormat": "Desteklenmeyen görsel formatı (jpeg/png/webp olmalı).",
@@ -188,6 +191,19 @@
     "InvalidCredentials": "Email veya şifre hatalı.",
     "InvalidExternalToken": "Sağlayıcı token'ı doğrulanamadı.",
     "InvalidRefreshToken": "Refresh token geçersiz veya süresi dolmuş."
+  },
+  "paywall": {
+    "title": "DietApp Premium",
+    "subtitle": "Tabak fotoğrafından AI ile anlık kalori ve makro tahmini al.",
+    "featureAiScan": "Sınırsız AI tabak analizi",
+    "featureOneTap": "Tek dokunuşla günlüğe ekle",
+    "restorePurchases": "Satın alımları geri yükle",
+    "webUnavailable": "Satın alma işlemi sadece mobil uygulamada kullanılabilir.",
+    "loadFailed": "Abonelik seçenekleri yüklenemedi.",
+    "noOfferings": "Şu anda uygun bir abonelik paketi yok.",
+    "purchaseError": "Satın alma başarısız oldu, tekrar dene.",
+    "alreadyPremium": "Zaten premium üyesin.",
+    "close": "Kapat"
   },
   "deleteAccount": {
     "title": "Hesabını sil",

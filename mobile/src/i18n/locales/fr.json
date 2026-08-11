@@ -59,6 +59,7 @@
   },
   "home": {
     "greeting": "Bonjour",
+    "scanCta": "Analyser avec l'IA",
     "notAdded": "Rien ajouté pour l'instant.",
     "aiTag": "IA",
     "aiEstimateLabel": "Estimation IA",
@@ -156,6 +157,7 @@
     "languageEn": "English",
     "languageFr": "Français",
     "languageDe": "Deutsch",
+    "upgradeToPremium": "Passer à Premium",
     "units": "Système d'unités",
     "unitsMetric": "Métrique (kg/cm)",
     "unitsImperial": "Impérial (lb/pi)",
@@ -181,6 +183,7 @@
     "AgeRange": "L'âge doit être compris entre 13 et 100 ans.",
     "AiDailyQuotaReached": "Tu as atteint ta limite quotidienne d'analyses IA ({{quota}}), réessaie demain.",
     "ImageEmpty": "L'image est vide.",
+    "PremiumRequired": "Cette fonctionnalité nécessite un abonnement premium.",
     "ImageRequired": "Une image est requise.",
     "ImageTooLarge": "L'image est trop volumineuse (8 Mo max).",
     "UnsupportedImageFormat": "Format d'image non pris en charge (doit être jpeg/png/webp).",
@@ -189,6 +192,19 @@
     "InvalidCredentials": "Email ou mot de passe incorrect.",
     "InvalidExternalToken": "Impossible de vérifier le jeton du fournisseur.",
     "InvalidRefreshToken": "Le refresh token est invalide ou expiré."
+  },
+  "paywall": {
+    "title": "DietApp Premium",
+    "subtitle": "Obtiens une estimation instantanée des calories et macros par IA à partir d'une photo de ton assiette.",
+    "featureAiScan": "Analyses d'assiette IA illimitées",
+    "featureOneTap": "Ajoute à ton journal en un geste",
+    "restorePurchases": "Restaurer les achats",
+    "webUnavailable": "Les achats ne sont disponibles que dans l'application mobile.",
+    "loadFailed": "Impossible de charger les options d'abonnement.",
+    "noOfferings": "Aucun abonnement disponible pour le moment.",
+    "purchaseError": "L'achat a échoué, réessaie.",
+    "alreadyPremium": "Tu es déjà membre premium.",
+    "close": "Fermer"
   },
   "deleteAccount": {
     "title": "Supprimer ton compte",

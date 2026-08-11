@@ -15,6 +15,7 @@ import { refreshTokenStorage } from '@/api/secureStorage';
 import { SUPPORTED_LANGUAGES, setAppLanguage } from '@/i18n';
 import { useUnitStore } from '@/store/unitStore';
 import { PRIVACY_POLICY_URL, TERMS_OF_SERVICE_URL } from '@/constants/legal';
+import { usePremiumStatus } from '@/hooks/usePremiumStatus';
 
 function MenuRow({
   icon,
@@ -56,6 +57,7 @@ export default function ProfileScreen() {
   const user = useAuthStore((s) => s.user);
   const { preference, setPreference } = useThemeStore();
   const { system: unitSystem, setSystem: setUnitSystem } = useUnitStore();
+  const premiumStatus = usePremiumStatus(true);
 
   const themePreferenceLabels: Record<typeof preference, string> = {
     system: t('profile.themeSystem'),
@@ -114,9 +116,34 @@ export default function ProfileScreen() {
         </Text>
       ) : null}
 
-      <View
+      <Pressable
+        onPress={() => router.push('/paywall')}
         style={{
           marginTop: spacing.lg,
+          padding: spacing.md,
+          borderRadius: 16,
+          backgroundColor: premiumStatus.data?.isPremium ? colors.primary + '15' : colors.surface,
+          borderWidth: 1,
+          borderColor: premiumStatus.data?.isPremium ? colors.primary : colors.border,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}
+      >
+        <Ionicons
+          name={premiumStatus.data?.isPremium ? 'star' : 'star-outline'}
+          size={20}
+          color={colors.primary}
+          style={{ marginRight: spacing.sm }}
+        />
+        <Text style={{ flex: 1, color: colors.textPrimary, fontWeight: '600' }}>
+          {premiumStatus.data?.isPremium ? t('paywall.alreadyPremium') : t('profile.upgradeToPremium')}
+        </Text>
+        <Ionicons name="chevron-forward" size={18} color={colors.textSecondary} />
+      </Pressable>
+
+      <View
+        style={{
+          marginTop: spacing.md,
           borderRadius: 16,
           backgroundColor: colors.surface,
           borderWidth: 1,
