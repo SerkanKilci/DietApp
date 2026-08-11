@@ -8,6 +8,11 @@ namespace DietApp.Infrastructure.Vision;
 
 public class OpenAiVisionService(IHttpClientFactory httpClientFactory, IOptions<OpenAiOptions> options) : IVisionAnalysisService
 {
+    private static readonly JsonSerializerOptions RequestJsonOptions = new()
+    {
+        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+    };
+
     private static readonly object PlateAnalysisSchema = new
     {
         type = "object",
@@ -67,7 +72,7 @@ public class OpenAiVisionService(IHttpClientFactory httpClientFactory, IOptions<
         var client = httpClientFactory.CreateClient(nameof(OpenAiVisionService));
         using var request = new HttpRequestMessage(HttpMethod.Post, "https://api.openai.com/v1/chat/completions")
         {
-            Content = JsonContent.Create(requestBody),
+            Content = JsonContent.Create(requestBody, options: RequestJsonOptions),
         };
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", options.Value.ApiKey);
 
