@@ -1,4 +1,7 @@
 import { z } from 'zod';
+import { TFunction } from 'i18next';
 
-export const emailSchema = z.string().trim().min(1, 'Email gerekli').email('Geçerli bir email girin');
-export const passwordSchema = z.string().min(8, 'Şifre en az 8 karakter olmalı');
+export const emailSchema = (t: TFunction) =>
+  z.string().trim().min(1, t('validation.emailRequired')).email(t('validation.emailInvalid'));
+
+export const passwordSchema = (t: TFunction) => z.string().min(8, t('validation.passwordMin'));

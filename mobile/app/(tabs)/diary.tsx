@@ -3,6 +3,7 @@ import { ActivityIndicator, FlatList, Pressable, Text, TextInput, View } from 'r
 import { useRouter } from 'expo-router';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { Screen } from '@/components/Screen';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -10,19 +11,20 @@ import { foodApi } from '@/api/foodApi';
 import { FoodListItemDto, FoodSource } from '@/api/types';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 
-const SOURCE_LABELS: Record<FoodSource, string> = {
-  Usda: 'USDA',
-  OpenFoodFacts: 'Open Food Facts',
-  UserCreated: 'Kendi yemeğim',
-};
-
 const PAGE_SIZE = 30;
 
 export default function DiaryScreen() {
   const { colors, spacing } = useTheme();
   const router = useRouter();
+  const { t, i18n } = useTranslation();
   const [query, setQuery] = useState('');
   const debouncedQuery = useDebouncedValue(query, 300);
+
+  const sourceLabels: Record<FoodSource, string> = {
+    Usda: t('diary.sourceUsda'),
+    OpenFoodFacts: t('diary.sourceOff'),
+    UserCreated: t('diary.sourceUserCreated'),
+  };
 
   const searchQuery = useInfiniteQuery({
     queryKey: ['foods', 'search', debouncedQuery],
@@ -52,7 +54,7 @@ export default function DiaryScreen() {
         <Text style={{ color: colors.textPrimary, fontSize: 16, fontWeight: '600' }}>{item.name}</Text>
         <Text style={{ color: colors.textSecondary, fontSize: 13, marginTop: 2 }}>
           {item.brand ? `${item.brand} · ` : ''}
-          {SOURCE_LABELS[item.source]}
+          {sourceLabels[item.source]}
         </Text>
       </View>
       <Text style={{ color: colors.textPrimary, fontWeight: '600' }}>{item.caloriesPer100g} kcal</Text>
@@ -63,13 +65,14 @@ export default function DiaryScreen() {
   return (
     <Screen>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Text style={{ fontSize: 20, fontWeight: '700', color: colors.textPrimary }}>Besinler</Text>
+        <Text style={{ fontSize: 20, fontWeight: '700', color: colors.textPrimary }}>{t('diary.title')}</Text>
         <Pressable
           onPress={() => router.push('/food/create')}
+          hitSlop={8}
           style={{
-            width: 36,
-            height: 36,
-            borderRadius: 18,
+            width: 44,
+            height: 44,
+            borderRadius: 22,
             backgroundColor: colors.primary,
             alignItems: 'center',
             justifyContent: 'center',
@@ -96,7 +99,7 @@ export default function DiaryScreen() {
         <TextInput
           value={query}
           onChangeText={setQuery}
-          placeholder="Besin ara... (örn. chicken, elma, nutella)"
+          placeholder={t('diary.searchPlaceholder')}
           placeholderTextColor={colors.textSecondary}
           style={{ flex: 1, paddingVertical: spacing.sm + 2, paddingHorizontal: spacing.sm, color: colors.textPrimary }}
         />
@@ -104,12 +107,30 @@ export default function DiaryScreen() {
 
       {totalCount > 0 && (
         <Text style={{ color: colors.textSecondary, fontSize: 12, marginBottom: spacing.sm }}>
-          {totalCount.toLocaleString('tr-TR')} sonuç
+          {t('diary.resultsCount', { count: totalCount, formattedCount: totalCount.toLocaleString(i18n.language) })}
         </Text>
       )}
 
       {searchQuery.isLoading ? (
         <ActivityIndicator color={colors.primary} style={{ marginTop: spacing.lg }} />
+      ) : searchQuery.isError ? (
+        <View style={{ marginTop: spacing.lg, alignItems: 'center' }}>
+          <Text style={{ color: colors.textSecondary, marginBottom: spacing.md, textAlign: 'center' }}>
+            {t('common.genericError')}
+          </Text>
+          <Pressable
+            onPress={() => searchQuery.refetch()}
+            style={{
+              paddingVertical: spacing.sm,
+              paddingHorizontal: spacing.md,
+              borderRadius: 999,
+              borderWidth: 1,
+              borderColor: colors.border,
+            }}
+          >
+            <Text style={{ color: colors.textPrimary, fontWeight: '600' }}>{t('common.retry')}</Text>
+          </Pressable>
+        </View>
       ) : (
         <FlatList
           data={items}
@@ -128,7 +149,7 @@ export default function DiaryScreen() {
           }
           ListEmptyComponent={
             <Text style={{ color: colors.textSecondary, marginTop: spacing.lg, textAlign: 'center' }}>
-              Sonuç bulunamadı. Sağ üstteki + ile kendi yemeğini ekleyebilirsin.
+              {t('diary.noResults')}
             </Text>
           }
         />

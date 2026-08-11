@@ -35,6 +35,17 @@ switch (args[0].ToLowerInvariant())
         await OpenFoodFactsImporter.RunAsync(args[1], connectionString);
         return 0;
 
+    case "translate":
+        var apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
+        if (string.IsNullOrWhiteSpace(apiKey))
+        {
+            Console.WriteLine("OPENAI_API_KEY ortam değişkeni gerekli.");
+            return 1;
+        }
+        var model = Environment.GetEnvironmentVariable("OPENAI_MODEL") ?? "gpt-4o-mini";
+        await FoodTranslationImporter.RunAsync(connectionString, apiKey, model);
+        return 0;
+
     default:
         PrintUsage();
         return 1;
@@ -48,6 +59,7 @@ static void PrintUsage()
         Kullanım:
           dotnet run -- usda <food.csv> <food_nutrient.csv> <nutrient.csv>
           dotnet run -- off <products.csv>
+          dotnet run -- translate   (OPENAI_API_KEY ortam değişkeni gerekli; OPENAI_MODEL opsiyonel)
 
         Dosyaları nereden indireceğin:
           USDA:  https://fdc.nal.usda.gov/download-datasets  ("Foundation Foods" veya "SR Legacy" öner.)

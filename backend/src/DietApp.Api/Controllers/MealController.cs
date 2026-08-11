@@ -19,7 +19,7 @@ public class MealController(IMealDiaryService mealDiaryService) : ApiControllerB
         }
         catch (ValidationException ex)
         {
-            return Problem(title: ex.Message, statusCode: StatusCodes.Status400BadRequest);
+            return ValidationProblem(ex);
         }
     }
 
@@ -32,7 +32,7 @@ public class MealController(IMealDiaryService mealDiaryService) : ApiControllerB
         }
         catch (ValidationException ex)
         {
-            return Problem(title: ex.Message, statusCode: StatusCodes.Status400BadRequest);
+            return ValidationProblem(ex);
         }
     }
 
@@ -45,7 +45,7 @@ public class MealController(IMealDiaryService mealDiaryService) : ApiControllerB
         }
         catch (ValidationException ex)
         {
-            return Problem(title: ex.Message, statusCode: StatusCodes.Status400BadRequest);
+            return ValidationProblem(ex);
         }
     }
 

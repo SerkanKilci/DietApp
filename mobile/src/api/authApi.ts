@@ -12,4 +12,5 @@ export const authApi = {
     apiClient.post<AuthResponse>('/api/auth/refresh', payload).then((res) => res.data),
   logout: (payload: RefreshRequest) => apiClient.post('/api/auth/logout', payload).then(() => undefined),
   me: () => apiClient.get<UserDto>('/api/auth/me').then((res) => res.data),
+  deleteAccount: () => apiClient.delete('/api/auth/me').then(() => undefined),
 };

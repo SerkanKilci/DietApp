@@ -39,4 +39,14 @@ public static class FoodDataTables
         table.Columns.Add("Unit", typeof(string));
         return table;
     }
+
+    public static DataTable CreateFoodItemTranslationsTable()
+    {
+        var table = new DataTable("FoodItemTranslations");
+        table.Columns.Add("Id", typeof(Guid));
+        table.Columns.Add("FoodItemId", typeof(Guid));
+        table.Columns.Add("LanguageCode", typeof(string));
+        table.Columns.Add("Name", typeof(string));
+        return table;
+    }
 }

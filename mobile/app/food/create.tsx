@@ -1,9 +1,11 @@
+import { useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
 import { Screen } from '@/components/Screen';
@@ -13,29 +15,42 @@ import { useTheme } from '@/theme/ThemeProvider';
 import { foodApi } from '@/api/foodApi';
 import { getApiErrorMessage } from '@/utils/apiError';
 
-const requiredNumberString = z
-  .string()
-  .min(1, 'Bu alan gerekli')
-  .refine((v) => !Number.isNaN(Number(v)) && Number(v) >= 0, 'Geçerli, negatif olmayan bir sayı gir');
-
-const schema = z.object({
-  name: z.string().trim().min(1, 'İsim gerekli'),
-  brand: z.string().trim().optional(),
-  caloriesPer100g: requiredNumberString,
-  proteinPer100g: requiredNumberString,
-  carbPer100g: requiredNumberString,
-  fatPer100g: requiredNumberString,
-  fiberPer100g: z.string().optional(),
-  sugarPer100g: z.string().optional(),
-  sodiumMgPer100g: z.string().optional(),
-});
-
-type FormValues = z.infer<typeof schema>;
+type FormValues = {
+  name: string;
+  brand?: string;
+  caloriesPer100g: string;
+  proteinPer100g: string;
+  carbPer100g: string;
+  fatPer100g: string;
+  fiberPer100g?: string;
+  sugarPer100g?: string;
+  sodiumMgPer100g?: string;
+};
 
 export default function CreateFoodScreen() {
   const { colors, spacing } = useTheme();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
+
+  const schema = useMemo(() => {
+    const requiredNumberString = z
+      .string()
+      .min(1, t('validation.fieldRequired'))
+      .refine((v) => !Number.isNaN(Number(v)) && Number(v) >= 0, t('validation.validNonNegativeNumber'));
+
+    return z.object({
+      name: z.string().trim().min(1, t('validation.fieldRequired')),
+      brand: z.string().trim().optional(),
+      caloriesPer100g: requiredNumberString,
+      proteinPer100g: requiredNumberString,
+      carbPer100g: requiredNumberString,
+      fatPer100g: requiredNumberString,
+      fiberPer100g: z.string().optional(),
+      sugarPer100g: z.string().optional(),
+      sodiumMgPer100g: z.string().optional(),
+    });
+  }, [t]);
 
   const {
     control,
@@ -79,25 +94,27 @@ export default function CreateFoodScreen() {
   };
 
   return (
-    <Screen>
-      <Pressable onPress={() => router.back()} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: spacing.md }}>
+    <Screen edges={['top', 'bottom']}>
+      <Pressable
+        onPress={() => router.back()}
+        hitSlop={8}
+        style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: spacing.xs, marginBottom: spacing.sm }}
+      >
         <Ionicons name="chevron-back" size={22} color={colors.textPrimary} />
-        <Text style={{ color: colors.textPrimary, fontSize: 16 }}>Geri</Text>
+        <Text style={{ color: colors.textPrimary, fontSize: 16 }}>{t('common.back')}</Text>
       </Pressable>
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <Text style={{ fontSize: 22, fontWeight: '700', color: colors.textPrimary, marginBottom: spacing.md }}>
-          Kendi yemeğini ekle
+          {t('foodCreate.title')}
         </Text>
-        <Text style={{ color: colors.textSecondary, marginBottom: spacing.md }}>
-          Değerleri 100 gram için gir.
-        </Text>
+        <Text style={{ color: colors.textSecondary, marginBottom: spacing.md }}>{t('foodCreate.subtitle')}</Text>
 
         <Controller
           control={control}
           name="name"
           render={({ field }) => (
-            <TextField label="İsim" value={field.value} onChangeText={field.onChange} error={errors.name?.message} />
+            <TextField label={t('foodCreate.name')} value={field.value} onChangeText={field.onChange} error={errors.name?.message} />
           )}
         />
 
@@ -105,7 +122,7 @@ export default function CreateFoodScreen() {
           control={control}
           name="brand"
           render={({ field }) => (
-            <TextField label="Marka (opsiyonel)" value={field.value} onChangeText={field.onChange} />
+            <TextField label={t('foodCreate.brand')} value={field.value} onChangeText={field.onChange} />
           )}
         />
 
@@ -116,7 +133,7 @@ export default function CreateFoodScreen() {
               name="caloriesPer100g"
               render={({ field }) => (
                 <TextField
-                  label="Kalori (kcal)"
+                  label={t('foodCreate.calories')}
                   keyboardType="decimal-pad"
                   value={field.value}
                   onChangeText={field.onChange}
@@ -131,7 +148,7 @@ export default function CreateFoodScreen() {
               name="proteinPer100g"
               render={({ field }) => (
                 <TextField
-                  label="Protein (g)"
+                  label={t('foodCreate.protein')}
                   keyboardType="decimal-pad"
                   value={field.value}
                   onChangeText={field.onChange}
@@ -149,7 +166,7 @@ export default function CreateFoodScreen() {
               name="carbPer100g"
               render={({ field }) => (
                 <TextField
-                  label="Karbonhidrat (g)"
+                  label={t('foodCreate.carb')}
                   keyboardType="decimal-pad"
                   value={field.value}
                   onChangeText={field.onChange}
@@ -164,7 +181,7 @@ export default function CreateFoodScreen() {
               name="fatPer100g"
               render={({ field }) => (
                 <TextField
-                  label="Yağ (g)"
+                  label={t('foodCreate.fat')}
                   keyboardType="decimal-pad"
                   value={field.value}
                   onChangeText={field.onChange}
@@ -181,7 +198,7 @@ export default function CreateFoodScreen() {
               control={control}
               name="fiberPer100g"
               render={({ field }) => (
-                <TextField label="Lif (g)" keyboardType="decimal-pad" value={field.value} onChangeText={field.onChange} />
+                <TextField label={t('foodCreate.fiber')} keyboardType="decimal-pad" value={field.value} onChangeText={field.onChange} />
               )}
             />
           </View>
@@ -190,7 +207,7 @@ export default function CreateFoodScreen() {
               control={control}
               name="sugarPer100g"
               render={({ field }) => (
-                <TextField label="Şeker (g)" keyboardType="decimal-pad" value={field.value} onChangeText={field.onChange} />
+                <TextField label={t('foodCreate.sugar')} keyboardType="decimal-pad" value={field.value} onChangeText={field.onChange} />
               )}
             />
           </View>
@@ -200,15 +217,17 @@ export default function CreateFoodScreen() {
           control={control}
           name="sodiumMgPer100g"
           render={({ field }) => (
-            <TextField label="Sodyum (mg)" keyboardType="decimal-pad" value={field.value} onChangeText={field.onChange} />
+            <TextField label={t('foodCreate.sodium')} keyboardType="decimal-pad" value={field.value} onChangeText={field.onChange} />
           )}
         />
 
         {createMutation.isError ? (
-          <Text style={{ color: colors.danger, marginBottom: spacing.sm }}>{getApiErrorMessage(createMutation.error)}</Text>
+          <Text style={{ color: colors.danger, marginBottom: spacing.sm }}>
+            {getApiErrorMessage(createMutation.error, t)}
+          </Text>
         ) : null}
 
-        <Button title="Kaydet" loading={createMutation.isPending} onPress={handleSubmit(onSubmit)} />
+        <Button title={t('common.save')} loading={createMutation.isPending} onPress={handleSubmit(onSubmit)} />
       </ScrollView>
     </Screen>
   );

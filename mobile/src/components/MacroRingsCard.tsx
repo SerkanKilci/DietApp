@@ -1,4 +1,5 @@
 import { Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@/theme/ThemeProvider';
 import { DailySummaryDto } from '@/api/types';
@@ -26,6 +27,7 @@ function MacroRingItem({ label, consumed, goal, color }: { label: string; consum
 
 export function MacroRingsCard({ summary }: { summary: DailySummaryDto }) {
   const { colors, spacing } = useTheme();
+  const { t } = useTranslation();
   const calorieProgress = summary.calorieGoal > 0 ? summary.consumedCalories / summary.calorieGoal : 0;
   const remaining = Math.round(summary.remainingCalories);
 
@@ -47,7 +49,7 @@ export function MacroRingsCard({ summary }: { summary: DailySummaryDto }) {
               {remaining < 0 ? `+${Math.abs(remaining)}` : remaining}
             </Text>
             <Text style={{ color: colors.textSecondary, fontSize: 12 }}>
-              {remaining < 0 ? 'kcal aşıldı' : 'kcal kaldı'}
+              {remaining < 0 ? t('home.kcalOver') : t('home.kcalRemaining')}
             </Text>
           </View>
         </View>
@@ -57,9 +59,9 @@ export function MacroRingsCard({ summary }: { summary: DailySummaryDto }) {
       </View>
 
       <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: spacing.lg }}>
-        <MacroRingItem label="Protein" consumed={summary.consumedProtein} goal={summary.proteinGoal} color={colors.protein} />
-        <MacroRingItem label="Karb" consumed={summary.consumedCarb} goal={summary.carbGoal} color={colors.carb} />
-        <MacroRingItem label="Yağ" consumed={summary.consumedFat} goal={summary.fatGoal} color={colors.fat} />
+        <MacroRingItem label={t('macros.protein')} consumed={summary.consumedProtein} goal={summary.proteinGoal} color={colors.protein} />
+        <MacroRingItem label={t('macros.carb')} consumed={summary.consumedCarb} goal={summary.carbGoal} color={colors.carb} />
+        <MacroRingItem label={t('macros.fat')} consumed={summary.consumedFat} goal={summary.fatGoal} color={colors.fat} />
       </View>
     </View>
   );

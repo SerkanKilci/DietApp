@@ -27,8 +27,8 @@ export function RingProgress({ size, strokeWidth, progress, color, trackColor }:
         strokeDashoffset={strokeDashoffset}
         strokeLinecap="round"
         fill="none"
-        rotation="-90"
-        origin={`${size / 2}, ${size / 2}`}
+        rotation={-90}
+        origin={[size / 2, size / 2]}
       />
     </Svg>
   );

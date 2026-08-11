@@ -2,8 +2,10 @@ import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-nati
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { Screen } from '@/components/Screen';
+import { Button } from '@/components/Button';
 import { MacroRingsCard } from '@/components/MacroRingsCard';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useAuthStore } from '@/store/authStore';
@@ -12,25 +14,30 @@ import { mealApi } from '@/api/mealApi';
 import { MealGroupDto, MealType } from '@/api/types';
 import { todayDateString } from '@/utils/date';
 
-const MEAL_TYPE_LABELS: Record<MealType, string> = {
-  Breakfast: 'Kahvaltı',
-  Lunch: 'Öğle Yemeği',
-  Dinner: 'Akşam Yemeği',
-  Snack: 'Ara Öğün',
-};
+function useMealTypeLabels(): Record<MealType, string> {
+  const { t } = useTranslation();
+  return {
+    Breakfast: t('mealType.breakfast'),
+    Lunch: t('mealType.lunchFull'),
+    Dinner: t('mealType.dinnerFull'),
+    Snack: t('mealType.snack'),
+  };
+}
 
 function MealSection({ group, onDeleteItem }: { group: MealGroupDto; onDeleteItem: (id: string) => void }) {
   const { colors, spacing } = useTheme();
+  const { t } = useTranslation();
+  const mealTypeLabels = useMealTypeLabels();
 
   return (
     <View style={{ marginTop: spacing.md }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: spacing.xs }}>
-        <Text style={{ color: colors.textPrimary, fontWeight: '700', fontSize: 15 }}>{MEAL_TYPE_LABELS[group.mealType]}</Text>
+        <Text style={{ color: colors.textPrimary, fontWeight: '700', fontSize: 15 }}>{mealTypeLabels[group.mealType]}</Text>
         <Text style={{ color: colors.textSecondary, fontSize: 12 }}>{Math.round(group.totalCalories)} kcal</Text>
       </View>
 
       {group.items.length === 0 ? (
-        <Text style={{ color: colors.textSecondary, fontSize: 13 }}>Henüz bir şey eklenmedi.</Text>
+        <Text style={{ color: colors.textSecondary, fontSize: 13 }}>{t('home.notAdded')}</Text>
       ) : (
         group.items.map((item) => (
           <View
@@ -56,12 +63,12 @@ function MealSection({ group, onDeleteItem }: { group: MealGroupDto; onDeleteIte
                       backgroundColor: colors.primary + '22',
                     }}
                   >
-                    <Text style={{ color: colors.primary, fontSize: 10, fontWeight: '700' }}>AI</Text>
+                    <Text style={{ color: colors.primary, fontSize: 10, fontWeight: '700' }}>{t('home.aiTag')}</Text>
                   </View>
                 ) : null}
               </View>
               <Text style={{ color: colors.textSecondary, fontSize: 12, marginTop: 1 }}>
-                {item.isAiEstimated ? 'AI tahmini' : `${item.quantityG} g`} · {Math.round(item.caloriesTotal)} kcal
+                {item.isAiEstimated ? t('home.aiEstimateLabel') : `${item.quantityG} g`} · {Math.round(item.caloriesTotal)} kcal
               </Text>
             </View>
             <Pressable onPress={() => onDeleteItem(item.id)} hitSlop={8}>
@@ -77,6 +84,7 @@ function MealSection({ group, onDeleteItem }: { group: MealGroupDto; onDeleteIte
 export default function HomeScreen() {
   const { colors, spacing } = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const queryClient = useQueryClient();
   const today = todayDateString();
@@ -94,7 +102,7 @@ export default function HomeScreen() {
     <Screen>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <Text style={{ fontSize: 24, fontWeight: '700', color: colors.textPrimary }}>
-          Merhaba{user ? `, ${user.displayName}` : ''}
+          {t('home.greeting')}{user ? `, ${user.displayName}` : ''}
         </Text>
         <Pressable
           onPress={() => router.push('/scan')}
@@ -114,7 +122,12 @@ export default function HomeScreen() {
       {summaryQuery.isLoading ? (
         <ActivityIndicator color={colors.primary} style={{ marginTop: spacing.lg }} />
       ) : !summaryQuery.data ? (
-        <Text style={{ marginTop: spacing.md, color: colors.textSecondary }}>Günlük özet yüklenemedi.</Text>
+        <View style={{ marginTop: spacing.lg, alignItems: 'center' }}>
+          <Text style={{ color: colors.textSecondary, marginBottom: spacing.md, textAlign: 'center' }}>
+            {t('home.loadFailed')}
+          </Text>
+          <Button title={t('common.retry')} variant="secondary" onPress={() => summaryQuery.refetch()} />
+        </View>
       ) : (
         <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: spacing.md }}>
           <MacroRingsCard summary={summaryQuery.data} />

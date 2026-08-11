@@ -17,15 +17,17 @@ public class MealDiaryService(
     {
         if (request.QuantityG <= 0)
         {
-            throw new ValidationException("Miktar 0'dan büyük olmalı.");
+            throw new ValidationException(ValidationErrorCode.QuantityMustBePositive, "Miktar 0'dan büyük olmalı.");
         }
 
-        var food = await foodItemRepository.GetByIdAsync(request.FoodItemId, ct)
-            ?? throw new ValidationException("Besin bulunamadı.");
+        // Burada sadece sayısal makrolar (Calories/Protein/...) kullanılıyor, food.Name hiç okunmuyor —
+        // dil önemsiz, sabit bir değer yeterli.
+        var food = await foodItemRepository.GetByIdAsync(request.FoodItemId, "en", ct)
+            ?? throw new ValidationException(ValidationErrorCode.FoodNotFound, "Besin bulunamadı.");
 
         if (food.Source == FoodSource.UserCreated && food.CreatedByUserId != userId)
         {
-            throw new ValidationException("Besin bulunamadı.");
+            throw new ValidationException(ValidationErrorCode.FoodNotFound, "Besin bulunamadı.");
         }
 
         var factor = request.QuantityG / 100m;
@@ -56,17 +58,17 @@ public class MealDiaryService(
         var analysis = await aiPlateAnalysisRepository.GetByIdAsync(request.AiPlateAnalysisId, ct);
         if (analysis is null || analysis.UserId != userId)
         {
-            throw new ValidationException("AI analizi bulunamadı.");
+            throw new ValidationException(ValidationErrorCode.AiAnalysisNotFound, "AI analizi bulunamadı.");
         }
 
         if (string.IsNullOrWhiteSpace(request.Description))
         {
-            throw new ValidationException("Açıklama gerekli.");
+            throw new ValidationException(ValidationErrorCode.DescriptionRequired, "Açıklama gerekli.");
         }
 
         if (request.Calories is < 0 or > 6000 || request.ProteinG < 0 || request.CarbG < 0 || request.FatG < 0)
         {
-            throw new ValidationException("Girilen değerler geçerli aralığın dışında.");
+            throw new ValidationException(ValidationErrorCode.ValuesOutOfRange, "Girilen değerler geçerli aralığın dışında.");
         }
 
         var mealEntry = await mealEntryRepository.GetOrCreateAsync(userId, request.LogDate, request.MealType, ct);
@@ -98,7 +100,7 @@ public class MealDiaryService(
     public async Task<DailySummaryDto> GetDailySummaryAsync(Guid userId, DateOnly logDate, CancellationToken ct = default)
     {
         var goal = await nutritionGoalRepository.GetCurrentAsync(userId, ct)
-            ?? throw new ValidationException("Önce onboarding tamamlanmalı.");
+            ?? throw new ValidationException(ValidationErrorCode.OnboardingRequired, "Önce onboarding tamamlanmalı.");
 
         var mealEntries = await mealEntryRepository.GetByUserAndDateAsync(userId, logDate, ct);
         var entriesByType = mealEntries.ToDictionary(e => e.MealType);

@@ -21,12 +21,15 @@ public class AiPlateService(
         var usedToday = await repository.CountTodayForUserAsync(userId, ct);
         if (usedToday >= DailyQuota)
         {
-            throw new ValidationException($"Günlük AI analiz limitine ({DailyQuota}) ulaştın, yarın tekrar dene.");
+            throw new ValidationException(
+                ValidationErrorCode.AiDailyQuotaReached,
+                $"Günlük AI analiz limitine ({DailyQuota}) ulaştın, yarın tekrar dene.",
+                new Dictionary<string, object> { ["quota"] = DailyQuota });
         }
 
         if (imageBytes.Length == 0)
         {
-            throw new ValidationException("Görsel boş.");
+            throw new ValidationException(ValidationErrorCode.ImageEmpty, "Görsel boş.");
         }
 
         var result = await visionAnalysisService.AnalyzePlateAsync(imageBytes, contentType, ct);

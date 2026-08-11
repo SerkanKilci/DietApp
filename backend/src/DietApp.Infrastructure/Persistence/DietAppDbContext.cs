@@ -16,6 +16,7 @@ public class DietAppDbContext : DbContext
     public DbSet<NutritionGoal> NutritionGoals => Set<NutritionGoal>();
     public DbSet<FoodItem> FoodItems => Set<FoodItem>();
     public DbSet<FoodMicronutrient> FoodMicronutrients => Set<FoodMicronutrient>();
+    public DbSet<FoodItemTranslation> FoodItemTranslations => Set<FoodItemTranslation>();
     public DbSet<MealEntry> MealEntries => Set<MealEntry>();
     public DbSet<MealEntryItem> MealEntryItems => Set<MealEntryItem>();
     public DbSet<AiPlateAnalysis> AiPlateAnalyses => Set<AiPlateAnalysis>();

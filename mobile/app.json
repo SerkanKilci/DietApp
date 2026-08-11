@@ -8,7 +8,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false
     },
     "android": {
       "adaptiveIcon": {
@@ -17,7 +17,8 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "softwareKeyboardLayoutMode": "resize"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -33,7 +34,8 @@
           "photosPermission": "Tabak fotoğrafını seçebilmek için galeriye erişim izni gerekiyor.",
           "cameraPermission": "Tabağının fotoğrafını çekebilmek için kameraya erişim izni gerekiyor."
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "extra": {
       "apiUrl": "http://localhost:5299",

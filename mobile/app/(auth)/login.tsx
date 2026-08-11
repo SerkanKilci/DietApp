@@ -1,8 +1,10 @@
+import { useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useRouter } from 'expo-router';
-import { Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useMutation } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
 import { Screen } from '@/components/Screen';
@@ -15,16 +17,21 @@ import { applySession } from '@/api/session';
 import { emailSchema } from '@/utils/validation';
 import { getApiErrorMessage } from '@/utils/apiError';
 
-const loginSchema = z.object({
-  email: emailSchema,
-  password: z.string().min(1, 'Şifre gerekli'),
-});
-
-type LoginFormValues = z.infer<typeof loginSchema>;
+type LoginFormValues = { email: string; password: string };
 
 export default function LoginScreen() {
   const { colors, spacing } = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
+
+  const loginSchema = useMemo(
+    () =>
+      z.object({
+        email: emailSchema(t),
+        password: z.string().min(1, t('validation.passwordRequiredLogin')),
+      }),
+    [t]
+  );
 
   const {
     control,
@@ -44,11 +51,15 @@ export default function LoginScreen() {
   });
 
   return (
-    <Screen>
-      <View style={{ flex: 1, justifyContent: 'center' }}>
-        <Text style={{ fontSize: 28, fontWeight: '700', color: colors.textPrimary }}>Tekrar hoş geldin</Text>
+    <Screen edges={['top', 'bottom']}>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <Text style={{ fontSize: 28, fontWeight: '700', color: colors.textPrimary }}>{t('auth.loginTitle')}</Text>
         <Text style={{ marginTop: spacing.xs, marginBottom: spacing.lg, color: colors.textSecondary }}>
-          Devam etmek için giriş yap
+          {t('auth.loginSubtitle')}
         </Text>
 
         <Controller
@@ -56,7 +67,7 @@ export default function LoginScreen() {
           name="email"
           render={({ field }) => (
             <TextField
-              label="Email"
+              label={t('auth.email')}
               autoCapitalize="none"
               keyboardType="email-address"
               value={field.value}
@@ -71,7 +82,7 @@ export default function LoginScreen() {
           name="password"
           render={({ field }) => (
             <TextField
-              label="Şifre"
+              label={t('auth.password')}
               secureTextEntry
               value={field.value}
               onChangeText={field.onChange}
@@ -82,12 +93,12 @@ export default function LoginScreen() {
 
         {loginMutation.isError ? (
           <Text style={{ color: colors.danger, marginBottom: spacing.sm }}>
-            {getApiErrorMessage(loginMutation.error, 'Email veya şifre hatalı.')}
+            {getApiErrorMessage(loginMutation.error, t, t('auth.wrongCredentials'))}
           </Text>
         ) : null}
 
         <Button
-          title="Giriş yap"
+          title={t('auth.signIn')}
           loading={loginMutation.isPending}
           onPress={handleSubmit((values) => loginMutation.mutate(values))}
         />
@@ -95,12 +106,12 @@ export default function LoginScreen() {
         <SocialLoginButtons />
 
         <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: spacing.lg }}>
-          <Text style={{ color: colors.textSecondary }}>Hesabın yok mu? </Text>
+          <Text style={{ color: colors.textSecondary }}>{t('auth.noAccount')}</Text>
           <Link href="/register" replace>
-            <Text style={{ color: colors.primary, fontWeight: '600' }}>Kayıt ol</Text>
+            <Text style={{ color: colors.primary, fontWeight: '600' }}>{t('auth.signUp')}</Text>
           </Link>
         </View>
-      </View>
+      </ScrollView>
     </Screen>
   );
 }

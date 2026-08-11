@@ -147,6 +147,17 @@ public class AuthService(
         }
     }
 
+    // App Store (Guideline 5.1.1v) ve Play Store, hesap oluşturmayı destekleyen uygulamalarda
+    // uygulama içinden hesap silmeyi de zorunlu tutuyor.
+    public async Task DeleteAccountAsync(Guid userId, CancellationToken ct = default)
+    {
+        var user = await userRepository.GetByIdAsync(userId, ct);
+        if (user is not null)
+        {
+            await userRepository.DeleteAsync(user, ct);
+        }
+    }
+
     private async Task<AuthResponse> IssueTokensAsync(User user, string? ipAddress, CancellationToken ct)
     {
         var accessToken = jwtTokenService.GenerateAccessToken(user);

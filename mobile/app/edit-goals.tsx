@@ -3,6 +3,7 @@ import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-nati
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { Screen } from '@/components/Screen';
 import { Button } from '@/components/Button';
@@ -17,6 +18,7 @@ export default function EditGoalsScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const profileQuery = useProfile(true);
+  const { t } = useTranslation();
 
   const [calories, setCalories] = useState('');
   const [protein, setProtein] = useState('');
@@ -58,11 +60,11 @@ export default function EditGoalsScreen() {
     const fatG = Number(fat);
 
     if (!dailyCalories || dailyCalories < 800 || dailyCalories > 6000) {
-      setError('Günlük kalori 800-6000 aralığında olmalı.');
+      setError(t('editGoals.caloriesRangeError'));
       return;
     }
     if ([proteinG, carbG, fatG].some((v) => Number.isNaN(v) || v < 0)) {
-      setError('Makro değerleri geçerli, negatif olmayan sayılar olmalı.');
+      setError(t('editGoals.macrosError'));
       return;
     }
 
@@ -78,27 +80,26 @@ export default function EditGoalsScreen() {
   }
 
   return (
-    <Screen>
+    <Screen edges={['top', 'bottom']}>
       <Pressable
         onPress={() => (router.canGoBack() ? router.back() : router.replace('/home'))}
-        style={{ flexDirection: 'row', alignItems: 'center', marginBottom: spacing.md }}
+        hitSlop={8}
+        style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: spacing.xs, marginBottom: spacing.sm }}
       >
         <Ionicons name="chevron-back" size={22} color={colors.textPrimary} />
-        <Text style={{ color: colors.textPrimary, fontSize: 16 }}>Geri</Text>
+        <Text style={{ color: colors.textPrimary, fontSize: 16 }}>{t('common.back')}</Text>
       </Pressable>
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <Text style={{ fontSize: 22, fontWeight: '700', color: colors.textPrimary, marginBottom: spacing.xs }}>
-          Hedeflerini elle ayarla
+          {t('editGoals.title')}
         </Text>
-        <Text style={{ color: colors.textSecondary, marginBottom: spacing.md }}>
-          Kendi diyet programını oluştur — otomatik hesaplanan değerler yerine kendi hedeflerini gir.
-        </Text>
+        <Text style={{ color: colors.textSecondary, marginBottom: spacing.md }}>{t('editGoals.subtitle')}</Text>
 
-        <TextField label="Günlük kalori (kcal)" keyboardType="number-pad" value={calories} onChangeText={setCalories} />
-        <TextField label="Protein (g)" keyboardType="number-pad" value={protein} onChangeText={setProtein} />
-        <TextField label="Karbonhidrat (g)" keyboardType="number-pad" value={carb} onChangeText={setCarb} />
-        <TextField label="Yağ (g)" keyboardType="number-pad" value={fat} onChangeText={setFat} />
+        <TextField label={t('editGoals.calories')} keyboardType="number-pad" value={calories} onChangeText={setCalories} />
+        <TextField label={t('editGoals.protein')} keyboardType="number-pad" value={protein} onChangeText={setProtein} />
+        <TextField label={t('editGoals.carb')} keyboardType="number-pad" value={carb} onChangeText={setCarb} />
+        <TextField label={t('editGoals.fat')} keyboardType="number-pad" value={fat} onChangeText={setFat} />
 
         <View
           style={{
@@ -111,16 +112,18 @@ export default function EditGoalsScreen() {
           }}
         >
           <Text style={{ color: colors.textSecondary, fontSize: 12 }}>
-            Girdiğin makrolardan hesaplanan kalori: {Math.round(caloriesFromMacros)} kcal
+            {t('editGoals.computedFromMacros', { kcal: Math.round(caloriesFromMacros) })}
           </Text>
         </View>
 
         {error ? <Text style={{ color: colors.danger, marginBottom: spacing.sm }}>{error}</Text> : null}
         {mutation.isError ? (
-          <Text style={{ color: colors.danger, marginBottom: spacing.sm }}>{getApiErrorMessage(mutation.error)}</Text>
+          <Text style={{ color: colors.danger, marginBottom: spacing.sm }}>
+            {getApiErrorMessage(mutation.error, t)}
+          </Text>
         ) : null}
 
-        <Button title="Kaydet" loading={mutation.isPending} onPress={handleSave} />
+        <Button title={t('common.save')} loading={mutation.isPending} onPress={handleSave} />
       </ScrollView>
     </Screen>
   );

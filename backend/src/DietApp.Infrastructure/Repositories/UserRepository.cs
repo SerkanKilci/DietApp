@@ -30,4 +30,15 @@ public class UserRepository(DietAppDbContext dbContext) : IUserRepository
         dbContext.ExternalLogins.Add(externalLogin);
         await dbContext.SaveChangesAsync(ct);
     }
+
+    // Kullanıcıya ait tüm ilişkili veriler (profil, hedefler, günlük, AI analizleri, refresh token'lar,
+    // external login'ler) FK'lerde ON DELETE CASCADE ile yapılandırıldığından tek bir Remove yeterli
+    // (bkz. UserConfiguration/UserProfileConfiguration/NutritionGoalConfiguration/MealEntryConfiguration/
+    // AiPlateAnalysisConfiguration). Kullanıcının özel yemekleri (FoodItems.CreatedByUserId) SetNull ile
+    // sahipsiz kalır ama private oldukları için artık kimseye görünmez.
+    public async Task DeleteAsync(User user, CancellationToken ct = default)
+    {
+        dbContext.Users.Remove(user);
+        await dbContext.SaveChangesAsync(ct);
+    }
 }

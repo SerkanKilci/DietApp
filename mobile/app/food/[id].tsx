@@ -3,6 +3,7 @@ import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-nati
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { Screen } from '@/components/Screen';
 import { Button } from '@/components/Button';
@@ -14,25 +15,6 @@ import { dailySummaryQueryKey } from '@/hooks/useDailySummary';
 import { MealType } from '@/api/types';
 import { guessMealTypeByTime, todayDateString } from '@/utils/date';
 import { getApiErrorMessage } from '@/utils/apiError';
-
-const MEAL_TYPE_OPTIONS: { value: MealType; label: string }[] = [
-  { value: 'Breakfast', label: 'Kahvaltı' },
-  { value: 'Lunch', label: 'Öğle' },
-  { value: 'Dinner', label: 'Akşam' },
-  { value: 'Snack', label: 'Ara öğün' },
-];
-
-const NUTRIENT_LABELS: Record<string, string> = {
-  CALCIUM: 'Kalsiyum',
-  IRON: 'Demir',
-  POTASSIUM: 'Potasyum',
-  MAGNESIUM: 'Magnezyum',
-  ZINC: 'Çinko',
-  VITAMIN_C: 'Vitamin C',
-  VITAMIN_A: 'Vitamin A',
-  VITAMIN_D: 'Vitamin D',
-  VITAMIN_B12: 'Vitamin B12',
-};
 
 function Row({ label, value }: { label: string; value: string }) {
   const { colors, spacing } = useTheme();
@@ -57,6 +39,14 @@ export default function FoodDetailScreen() {
   const { colors, spacing } = useTheme();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
+
+  const MEAL_TYPE_OPTIONS: { value: MealType; label: string }[] = [
+    { value: 'Breakfast', label: t('mealType.breakfast') },
+    { value: 'Lunch', label: t('mealType.lunchShort') },
+    { value: 'Dinner', label: t('mealType.dinnerShort') },
+    { value: 'Snack', label: t('mealType.snack') },
+  ];
 
   const [quantity, setQuantity] = useState('100');
   const [mealType, setMealType] = useState<MealType>(guessMealTypeByTime());
@@ -94,16 +84,20 @@ export default function FoodDetailScreen() {
   };
 
   return (
-    <Screen>
-      <Pressable onPress={() => router.back()} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: spacing.md }}>
+    <Screen edges={['top', 'bottom']}>
+      <Pressable
+        onPress={() => router.back()}
+        hitSlop={8}
+        style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: spacing.xs, marginBottom: spacing.sm }}
+      >
         <Ionicons name="chevron-back" size={22} color={colors.textPrimary} />
-        <Text style={{ color: colors.textPrimary, fontSize: 16 }}>Geri</Text>
+        <Text style={{ color: colors.textPrimary, fontSize: 16 }}>{t('common.back')}</Text>
       </Pressable>
 
       {foodQuery.isLoading ? (
         <ActivityIndicator color={colors.primary} />
       ) : !foodQuery.data ? (
-        <Text style={{ color: colors.textSecondary }}>Besin bulunamadı.</Text>
+        <Text style={{ color: colors.textSecondary }}>{t('foodDetail.notFound')}</Text>
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
           <Text style={{ fontSize: 22, fontWeight: '700', color: colors.textPrimary }}>{foodQuery.data.name}</Text>
@@ -122,15 +116,15 @@ export default function FoodDetailScreen() {
             }}
           >
             <TextField
-              label="Miktar (g)"
+              label={t('foodDetail.quantity')}
               keyboardType="decimal-pad"
               value={quantity}
               onChangeText={setQuantity}
-              error={!isQuantityValid ? 'Geçerli bir miktar gir' : undefined}
+              error={!isQuantityValid ? t('foodDetail.invalidQuantity') : undefined}
             />
 
             <Text style={{ color: colors.textSecondary, marginBottom: spacing.xs, fontSize: 13, fontWeight: '600' }}>
-              Öğün
+              {t('foodDetail.meal')}
             </Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs, marginBottom: spacing.md }}>
               {MEAL_TYPE_OPTIONS.map((option) => {
@@ -157,11 +151,13 @@ export default function FoodDetailScreen() {
             </View>
 
             {addMutation.isError ? (
-              <Text style={{ color: colors.danger, marginBottom: spacing.sm }}>{getApiErrorMessage(addMutation.error)}</Text>
+              <Text style={{ color: colors.danger, marginBottom: spacing.sm }}>
+                {getApiErrorMessage(addMutation.error, t)}
+              </Text>
             ) : null}
 
             <Button
-              title={isQuantityValid ? `Günlüğe ekle (${previewCalories} kcal)` : 'Günlüğe ekle'}
+              title={isQuantityValid ? t('foodDetail.addToDiaryWithKcal', { kcal: previewCalories }) : t('foodDetail.addToDiary')}
               disabled={!isQuantityValid}
               loading={addMutation.isPending}
               onPress={handleAdd}
@@ -178,15 +174,15 @@ export default function FoodDetailScreen() {
               borderColor: colors.border,
             }}
           >
-            <Text style={{ color: colors.textSecondary, marginBottom: spacing.xs }}>100g başına</Text>
-            <Row label="Kalori" value={`${foodQuery.data.caloriesPer100g} kcal`} />
-            <Row label="Protein" value={`${foodQuery.data.proteinPer100g} g`} />
-            <Row label="Karbonhidrat" value={`${foodQuery.data.carbPer100g} g`} />
-            <Row label="Yağ" value={`${foodQuery.data.fatPer100g} g`} />
-            {foodQuery.data.fiberPer100g != null && <Row label="Lif" value={`${foodQuery.data.fiberPer100g} g`} />}
-            {foodQuery.data.sugarPer100g != null && <Row label="Şeker" value={`${foodQuery.data.sugarPer100g} g`} />}
+            <Text style={{ color: colors.textSecondary, marginBottom: spacing.xs }}>{t('foodDetail.per100g')}</Text>
+            <Row label={t('foodDetail.calories')} value={`${foodQuery.data.caloriesPer100g} kcal`} />
+            <Row label={t('foodDetail.protein')} value={`${foodQuery.data.proteinPer100g} g`} />
+            <Row label={t('foodDetail.carb')} value={`${foodQuery.data.carbPer100g} g`} />
+            <Row label={t('foodDetail.fat')} value={`${foodQuery.data.fatPer100g} g`} />
+            {foodQuery.data.fiberPer100g != null && <Row label={t('foodDetail.fiber')} value={`${foodQuery.data.fiberPer100g} g`} />}
+            {foodQuery.data.sugarPer100g != null && <Row label={t('foodDetail.sugar')} value={`${foodQuery.data.sugarPer100g} g`} />}
             {foodQuery.data.sodiumMgPer100g != null && (
-              <Row label="Sodyum" value={`${foodQuery.data.sodiumMgPer100g} mg`} />
+              <Row label={t('foodDetail.sodium')} value={`${foodQuery.data.sodiumMgPer100g} mg`} />
             )}
           </View>
 
@@ -201,11 +197,11 @@ export default function FoodDetailScreen() {
                 borderColor: colors.border,
               }}
             >
-              <Text style={{ color: colors.textSecondary, marginBottom: spacing.xs }}>Mikro besinler (100g)</Text>
+              <Text style={{ color: colors.textSecondary, marginBottom: spacing.xs }}>{t('foodDetail.micronutrients')}</Text>
               {foodQuery.data.micronutrients.map((m) => (
                 <Row
                   key={m.nutrientCode}
-                  label={NUTRIENT_LABELS[m.nutrientCode] ?? m.nutrientCode}
+                  label={t(`nutrients.${m.nutrientCode}`, { defaultValue: m.nutrientCode })}
                   value={`${m.amountPer100g} ${m.unit.toLowerCase()}`}
                 />
               ))}

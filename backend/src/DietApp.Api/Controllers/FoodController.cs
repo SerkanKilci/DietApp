@@ -13,12 +13,12 @@ public class FoodController(IFoodService foodService) : ApiControllerBase
     [HttpGet]
     public Task<ActionResult<FoodSearchResult>> Search(
         [FromQuery] string? q, [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken ct = default) =>
-        ExecuteAsync(() => foodService.SearchAsync(q, CurrentUserId, page, pageSize, ct));
+        ExecuteAsync(() => foodService.SearchAsync(q, CurrentUserId, RequestLanguage, page, pageSize, ct));
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<FoodDetailDto>> GetById(Guid id, CancellationToken ct)
     {
-        var food = await foodService.GetByIdAsync(id, CurrentUserId, ct);
+        var food = await foodService.GetByIdAsync(id, CurrentUserId, RequestLanguage, ct);
         return food is null ? NotFound() : food;
     }
 
@@ -32,7 +32,7 @@ public class FoodController(IFoodService foodService) : ApiControllerBase
         }
         catch (ValidationException ex)
         {
-            return Problem(title: ex.Message, statusCode: StatusCodes.Status400BadRequest);
+            return ValidationProblem(ex);
         }
     }
 
@@ -44,7 +44,7 @@ public class FoodController(IFoodService foodService) : ApiControllerBase
         }
         catch (ValidationException ex)
         {
-            return Problem(title: ex.Message, statusCode: StatusCodes.Status400BadRequest);
+            return ValidationProblem(ex);
         }
     }
 }

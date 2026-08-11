@@ -25,17 +25,17 @@ public class AiController(IAiPlateService aiPlateService) : ApiControllerBase
     {
         if (image is null || image.Length == 0)
         {
-            return Problem(title: "Görsel gerekli.", statusCode: StatusCodes.Status400BadRequest);
+            return ValidationProblem("ImageRequired", "Görsel gerekli.");
         }
 
         if (image.Length > MaxImageBytes)
         {
-            return Problem(title: "Görsel çok büyük (en fazla 8MB).", statusCode: StatusCodes.Status400BadRequest);
+            return ValidationProblem("ImageTooLarge", "Görsel çok büyük (en fazla 8MB).");
         }
 
         if (!AllowedContentTypes.Contains(image.ContentType))
         {
-            return Problem(title: "Desteklenmeyen görsel formatı (jpeg/png/webp olmalı).", statusCode: StatusCodes.Status400BadRequest);
+            return ValidationProblem("UnsupportedImageFormat", "Desteklenmeyen görsel formatı (jpeg/png/webp olmalı).");
         }
 
         using var memoryStream = new MemoryStream();
@@ -47,11 +47,11 @@ public class AiController(IAiPlateService aiPlateService) : ApiControllerBase
         }
         catch (ValidationException ex)
         {
-            return Problem(title: ex.Message, statusCode: StatusCodes.Status400BadRequest);
+            return ValidationProblem(ex);
         }
         catch (InvalidOperationException ex)
         {
-            return Problem(title: "AI analizi başarısız oldu: " + ex.Message, statusCode: StatusCodes.Status502BadGateway);
+            return BuildProblem("AI analizi başarısız oldu: " + ex.Message, StatusCodes.Status502BadGateway, "AiRequestFailed");
         }
     }
 }

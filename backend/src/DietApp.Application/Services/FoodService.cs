@@ -9,22 +9,22 @@ namespace DietApp.Application.Services;
 public class FoodService(IFoodItemRepository foodItemRepository) : IFoodService
 {
     public async Task<FoodSearchResult> SearchAsync(
-        string? query, Guid requestingUserId, int page, int pageSize, CancellationToken ct = default)
+        string? query, Guid requestingUserId, string languageCode, int page, int pageSize, CancellationToken ct = default)
     {
         page = Math.Max(1, page);
         pageSize = Math.Clamp(pageSize, 1, 50);
 
-        var (items, totalCount) = await foodItemRepository.SearchAsync(query, requestingUserId, page, pageSize, ct);
+        var (items, totalCount) = await foodItemRepository.SearchAsync(query, requestingUserId, languageCode, page, pageSize, ct);
 
         var dtos = items.Select(f => new FoodListItemDto(
-            f.Id, f.Name, f.Brand, f.Source, f.CaloriesPer100g, f.ProteinPer100g, f.CarbPer100g, f.FatPer100g));
+            f.Id, LocalizedName(f), f.Brand, f.Source, f.CaloriesPer100g, f.ProteinPer100g, f.CarbPer100g, f.FatPer100g));
 
         return new FoodSearchResult(dtos.ToList(), totalCount, page, pageSize);
     }
 
-    public async Task<FoodDetailDto?> GetByIdAsync(Guid id, Guid requestingUserId, CancellationToken ct = default)
+    public async Task<FoodDetailDto?> GetByIdAsync(Guid id, Guid requestingUserId, string languageCode, CancellationToken ct = default)
     {
-        var food = await foodItemRepository.GetByIdAsync(id, ct);
+        var food = await foodItemRepository.GetByIdAsync(id, languageCode, ct);
         if (food is null || IsPrivateToSomeoneElse(food, requestingUserId))
         {
             return null;
@@ -37,12 +37,12 @@ public class FoodService(IFoodItemRepository foodItemRepository) : IFoodService
     {
         if (string.IsNullOrWhiteSpace(request.Name))
         {
-            throw new ValidationException("Yemek adı gerekli.");
+            throw new ValidationException(ValidationErrorCode.FoodNameRequired, "Yemek adı gerekli.");
         }
 
         if (request.CaloriesPer100g < 0 || request.ProteinPer100g < 0 || request.CarbPer100g < 0 || request.FatPer100g < 0)
         {
-            throw new ValidationException("Besin değerleri negatif olamaz.");
+            throw new ValidationException(ValidationErrorCode.FoodValuesNegative, "Besin değerleri negatif olamaz.");
         }
 
         var food = new FoodItem
@@ -71,9 +71,13 @@ public class FoodService(IFoodItemRepository foodItemRepository) : IFoodService
     private static bool IsPrivateToSomeoneElse(FoodItem food, Guid requestingUserId) =>
         food.Source == FoodSource.UserCreated && food.CreatedByUserId != requestingUserId;
 
+    // Repository, istenen dile ait çeviriyi (varsa) FoodItem.Translations'a filtreli include ile
+    // zaten yükledi — burada sadece var mı yok mu bakıp İngilizce Name'e düşüyoruz.
+    private static string LocalizedName(FoodItem food) => food.Translations.FirstOrDefault()?.Name ?? food.Name;
+
     private static FoodDetailDto MapToDetailDto(FoodItem food) => new(
         food.Id,
-        food.Name,
+        LocalizedName(food),
         food.Brand,
         food.Source,
         food.CaloriesPer100g,

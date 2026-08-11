@@ -29,4 +29,5 @@ public class FoodItem
     public DateTime CreatedAt { get; set; }
 
     public ICollection<FoodMicronutrient> Micronutrients { get; set; } = new List<FoodMicronutrient>();
+    public ICollection<FoodItemTranslation> Translations { get; set; } = new List<FoodItemTranslation>();
 }

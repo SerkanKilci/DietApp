@@ -8,20 +8,27 @@ namespace DietApp.Infrastructure.Repositories;
 
 public class FoodItemRepository(DietAppDbContext dbContext) : IFoodItemRepository
 {
-    public Task<FoodItem?> GetByIdAsync(Guid id, CancellationToken ct = default) =>
-        dbContext.FoodItems.Include(f => f.Micronutrients).FirstOrDefaultAsync(f => f.Id == id, ct);
+    public Task<FoodItem?> GetByIdAsync(Guid id, string languageCode, CancellationToken ct = default) =>
+        dbContext.FoodItems
+            .Include(f => f.Micronutrients)
+            .Include(f => f.Translations.Where(t => t.LanguageCode == languageCode))
+            .FirstOrDefaultAsync(f => f.Id == id, ct);
 
     public async Task<(IReadOnlyList<FoodItem> Items, int TotalCount)> SearchAsync(
-        string? query, Guid? createdByUserId, int page, int pageSize, CancellationToken ct = default)
+        string? query, Guid? createdByUserId, string languageCode, int page, int pageSize, CancellationToken ct = default)
     {
         // Herkese açık (USDA/OFF) kayıtlar + isteği yapan kullanıcının kendi özel yemekleri.
         // Başka bir kullanıcının özel yemeği aramada görünmez.
-        var baseQuery = dbContext.FoodItems.Where(f =>
-            f.Source != FoodSource.UserCreated || f.CreatedByUserId == createdByUserId);
+        var baseQuery = dbContext.FoodItems
+            .Include(f => f.Translations.Where(t => t.LanguageCode == languageCode))
+            .Where(f => f.Source != FoodSource.UserCreated || f.CreatedByUserId == createdByUserId);
 
         if (!string.IsNullOrWhiteSpace(query))
         {
-            baseQuery = baseQuery.Where(f => EF.Functions.Like(f.Name, $"%{query}%"));
+            // İsim İngilizce'de VEYA istenen dildeki çeviride eşleşirse sonuçlara girer.
+            baseQuery = baseQuery.Where(f =>
+                EF.Functions.Like(f.Name, $"%{query}%") ||
+                f.Translations.Any(t => t.LanguageCode == languageCode && EF.Functions.Like(t.Name, $"%{query}%")));
         }
 
         var totalCount = await baseQuery.CountAsync(ct);

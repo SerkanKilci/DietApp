@@ -159,6 +159,33 @@ namespace DietApp.Infrastructure.Persistence.Migrations
                     b.ToTable("FoodItems", (string)null);
                 });
 
+            modelBuilder.Entity("DietApp.Domain.Entities.FoodItemTranslation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FoodItemId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("LanguageCode")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FoodItemId", "LanguageCode")
+                        .IsUnique();
+
+                    b.ToTable("FoodItemTranslations", (string)null);
+                });
+
             modelBuilder.Entity("DietApp.Domain.Entities.FoodMicronutrient", b =>
                 {
                     b.Property<Guid>("Id")
@@ -440,6 +467,17 @@ namespace DietApp.Infrastructure.Persistence.Migrations
                     b.Navigation("CreatedByUser");
                 });
 
+            modelBuilder.Entity("DietApp.Domain.Entities.FoodItemTranslation", b =>
+                {
+                    b.HasOne("DietApp.Domain.Entities.FoodItem", "FoodItem")
+                        .WithMany("Translations")
+                        .HasForeignKey("FoodItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FoodItem");
+                });
+
             modelBuilder.Entity("DietApp.Domain.Entities.FoodMicronutrient", b =>
                 {
                     b.HasOne("DietApp.Domain.Entities.FoodItem", "FoodItem")
@@ -516,6 +554,8 @@ namespace DietApp.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("DietApp.Domain.Entities.FoodItem", b =>
                 {
                     b.Navigation("Micronutrients");
+
+                    b.Navigation("Translations");
                 });
 
             modelBuilder.Entity("DietApp.Domain.Entities.MealEntry", b =>

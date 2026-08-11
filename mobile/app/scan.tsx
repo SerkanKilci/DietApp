@@ -4,6 +4,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { Screen } from '@/components/Screen';
 import { Button } from '@/components/Button';
@@ -16,13 +17,6 @@ import { AnalyzePlateResponse, MealType } from '@/api/types';
 import { guessMealTypeByTime, todayDateString } from '@/utils/date';
 import { getApiErrorMessage } from '@/utils/apiError';
 
-const MEAL_TYPE_OPTIONS: { value: MealType; label: string }[] = [
-  { value: 'Breakfast', label: 'Kahvaltı' },
-  { value: 'Lunch', label: 'Öğle' },
-  { value: 'Dinner', label: 'Akşam' },
-  { value: 'Snack', label: 'Ara öğün' },
-];
-
 interface PickedAsset {
   uri: string;
   name: string;
@@ -34,6 +28,14 @@ export default function ScanScreen() {
   const { colors, spacing } = useTheme();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
+
+  const MEAL_TYPE_OPTIONS: { value: MealType; label: string }[] = [
+    { value: 'Breakfast', label: t('mealType.breakfast') },
+    { value: 'Lunch', label: t('mealType.lunchShort') },
+    { value: 'Dinner', label: t('mealType.dinnerShort') },
+    { value: 'Snack', label: t('mealType.snack') },
+  ];
 
   const [asset, setAsset] = useState<PickedAsset | null>(null);
   const [result, setResult] = useState<AnalyzePlateResponse | null>(null);
@@ -111,30 +113,29 @@ export default function ScanScreen() {
   });
 
   return (
-    <Screen>
+    <Screen edges={['top', 'bottom']}>
       <Pressable
         onPress={() => (router.canGoBack() ? router.back() : router.replace('/home'))}
-        style={{ flexDirection: 'row', alignItems: 'center', marginBottom: spacing.md }}
+        hitSlop={8}
+        style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: spacing.xs, marginBottom: spacing.sm }}
       >
         <Ionicons name="chevron-back" size={22} color={colors.textPrimary} />
-        <Text style={{ color: colors.textPrimary, fontSize: 16 }}>Geri</Text>
+        <Text style={{ color: colors.textPrimary, fontSize: 16 }}>{t('common.back')}</Text>
       </Pressable>
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <Text style={{ fontSize: 22, fontWeight: '700', color: colors.textPrimary, marginBottom: spacing.xs }}>
-          Tabak fotoğrafı çek
+          {t('scan.title')}
         </Text>
-        <Text style={{ color: colors.textSecondary, marginBottom: spacing.md }}>
-          Yapay zeka tabağındaki yemeği tanıyıp kalori/makro tahmini yapsın.
-        </Text>
+        <Text style={{ color: colors.textSecondary, marginBottom: spacing.md }}>{t('scan.subtitle')}</Text>
 
         {!asset ? (
           <View style={{ flexDirection: 'row', gap: spacing.sm }}>
             <View style={{ flex: 1 }}>
-              <Button title="Kamera" onPress={openCamera} />
+              <Button title={t('scan.camera')} onPress={openCamera} />
             </View>
             <View style={{ flex: 1 }}>
-              <Button title="Galeriden seç" variant="secondary" onPress={openLibrary} />
+              <Button title={t('scan.gallery')} variant="secondary" onPress={openLibrary} />
             </View>
           </View>
         ) : (
@@ -148,38 +149,40 @@ export default function ScanScreen() {
             {!result ? (
               <View style={{ marginTop: spacing.md, gap: spacing.sm }}>
                 {analyzeMutation.isError ? (
-                  <Text style={{ color: colors.danger }}>{getApiErrorMessage(analyzeMutation.error)}</Text>
+                  <Text style={{ color: colors.danger }}>
+                    {getApiErrorMessage(analyzeMutation.error, t)}
+                  </Text>
                 ) : null}
                 <Button
-                  title="Analiz et"
+                  title={t('scan.analyze')}
                   loading={analyzeMutation.isPending}
                   onPress={() => analyzeMutation.mutate()}
                 />
-                <Button title="Farklı fotoğraf seç" variant="secondary" onPress={resetForNewPhoto} />
+                <Button title={t('scan.differentPhoto')} variant="secondary" onPress={resetForNewPhoto} />
               </View>
             ) : (
               <View style={{ marginTop: spacing.md }}>
-                <TextField label="Ne yedin?" value={description} onChangeText={setDescription} />
+                <TextField label={t('scan.whatDidYouEat')} value={description} onChangeText={setDescription} />
 
                 <View style={{ flexDirection: 'row', gap: spacing.sm }}>
                   <View style={{ flex: 1 }}>
-                    <TextField label="Kalori (kcal)" keyboardType="number-pad" value={calories} onChangeText={setCalories} />
+                    <TextField label={t('scan.calories')} keyboardType="number-pad" value={calories} onChangeText={setCalories} />
                   </View>
                   <View style={{ flex: 1 }}>
-                    <TextField label="Protein (g)" keyboardType="number-pad" value={protein} onChangeText={setProtein} />
+                    <TextField label={t('scan.protein')} keyboardType="number-pad" value={protein} onChangeText={setProtein} />
                   </View>
                 </View>
                 <View style={{ flexDirection: 'row', gap: spacing.sm }}>
                   <View style={{ flex: 1 }}>
-                    <TextField label="Karbonhidrat (g)" keyboardType="number-pad" value={carb} onChangeText={setCarb} />
+                    <TextField label={t('scan.carb')} keyboardType="number-pad" value={carb} onChangeText={setCarb} />
                   </View>
                   <View style={{ flex: 1 }}>
-                    <TextField label="Yağ (g)" keyboardType="number-pad" value={fat} onChangeText={setFat} />
+                    <TextField label={t('scan.fat')} keyboardType="number-pad" value={fat} onChangeText={setFat} />
                   </View>
                 </View>
 
                 <Text style={{ color: colors.textSecondary, marginBottom: spacing.xs, fontSize: 13, fontWeight: '600' }}>
-                  Öğün
+                  {t('scan.meal')}
                 </Text>
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs, marginBottom: spacing.md }}>
                   {MEAL_TYPE_OPTIONS.map((option) => {
@@ -207,17 +210,17 @@ export default function ScanScreen() {
 
                 {addToMealMutation.isError ? (
                   <Text style={{ color: colors.danger, marginBottom: spacing.sm }}>
-                    {getApiErrorMessage(addToMealMutation.error)}
+                    {getApiErrorMessage(addToMealMutation.error, t)}
                   </Text>
                 ) : null}
 
                 <Button
-                  title="Günlüğe ekle"
+                  title={t('scan.addToDiary')}
                   loading={addToMealMutation.isPending}
                   onPress={() => addToMealMutation.mutate()}
                 />
                 <View style={{ marginTop: spacing.sm }}>
-                  <Button title="Farklı fotoğraf seç" variant="secondary" onPress={resetForNewPhoto} />
+                  <Button title={t('scan.differentPhoto')} variant="secondary" onPress={resetForNewPhoto} />
                 </View>
               </View>
             )}

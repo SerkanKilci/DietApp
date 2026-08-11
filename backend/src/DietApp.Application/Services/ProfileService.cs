@@ -67,7 +67,7 @@ public class ProfileService(
         ValidateCustomGoal(request);
 
         var profile = await profileRepository.GetByUserIdAsync(userId, ct)
-            ?? throw new ValidationException("Önce onboarding tamamlanmalı.");
+            ?? throw new ValidationException(ValidationErrorCode.OnboardingRequired, "Önce onboarding tamamlanmalı.");
 
         var nutritionGoal = new NutritionGoal
         {
@@ -90,17 +90,17 @@ public class ProfileService(
     {
         if (request.DailyCalories is < 800 or > 6000)
         {
-            throw new ValidationException("Günlük kalori 800-6000 aralığında olmalı.");
+            throw new ValidationException(ValidationErrorCode.DailyCaloriesRange, "Günlük kalori 800-6000 aralığında olmalı.");
         }
 
         if (request.ProteinG < 0 || request.CarbG < 0 || request.FatG < 0)
         {
-            throw new ValidationException("Makro değerleri negatif olamaz.");
+            throw new ValidationException(ValidationErrorCode.MacrosNegative, "Makro değerleri negatif olamaz.");
         }
 
         if (request.ProteinG > 500 || request.CarbG > 900 || request.FatG > 400)
         {
-            throw new ValidationException("Girilen makro değerleri gerçekçi aralığın dışında.");
+            throw new ValidationException(ValidationErrorCode.MacrosUnrealistic, "Girilen makro değerleri gerçekçi aralığın dışında.");
         }
     }
 
@@ -108,18 +108,18 @@ public class ProfileService(
     {
         if (request.HeightCm is < 100 or > 250)
         {
-            throw new ValidationException("Boy 100-250 cm aralığında olmalı.");
+            throw new ValidationException(ValidationErrorCode.HeightRange, "Boy 100-250 cm aralığında olmalı.");
         }
 
         if (request.WeightKg is < 30 or > 300)
         {
-            throw new ValidationException("Kilo 30-300 kg aralığında olmalı.");
+            throw new ValidationException(ValidationErrorCode.WeightRange, "Kilo 30-300 kg aralığında olmalı.");
         }
 
         var age = request.BirthDate.GetAge();
         if (age is < 13 or > 100)
         {
-            throw new ValidationException("Yaş 13-100 aralığında olmalı.");
+            throw new ValidationException(ValidationErrorCode.AgeRange, "Yaş 13-100 aralığında olmalı.");
         }
     }
 

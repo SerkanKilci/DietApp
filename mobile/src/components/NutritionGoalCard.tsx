@@ -1,4 +1,5 @@
 import { Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@/theme/ThemeProvider';
 import { NutritionGoalDto } from '@/api/types';
@@ -17,6 +18,7 @@ function MacroRow({ label, grams, color }: { label: string; grams: number; color
 
 export function NutritionGoalCard({ goal }: { goal: NutritionGoalDto }) {
   const { colors, spacing } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <View
@@ -29,14 +31,14 @@ export function NutritionGoalCard({ goal }: { goal: NutritionGoalDto }) {
         borderColor: colors.border,
       }}
     >
-      <Text style={{ color: colors.textSecondary }}>Günlük hedef</Text>
+      <Text style={{ color: colors.textSecondary }}>{t('nutritionGoal.dailyGoal')}</Text>
       <Text style={{ fontSize: 32, fontWeight: '700', color: colors.textPrimary, marginTop: spacing.xs }}>
         {goal.dailyCalories} <Text style={{ fontSize: 16, fontWeight: '500', color: colors.textSecondary }}>kcal</Text>
       </Text>
 
-      <MacroRow label="Protein" grams={goal.proteinG} color={colors.protein} />
-      <MacroRow label="Karbonhidrat" grams={goal.carbG} color={colors.carb} />
-      <MacroRow label="Yağ" grams={goal.fatG} color={colors.fat} />
+      <MacroRow label={t('foodDetail.protein')} grams={goal.proteinG} color={colors.protein} />
+      <MacroRow label={t('foodDetail.carb')} grams={goal.carbG} color={colors.carb} />
+      <MacroRow label={t('foodDetail.fat')} grams={goal.fatG} color={colors.fat} />
     </View>
   );
 }

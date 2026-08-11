@@ -47,6 +47,14 @@ public class AuthController(IAuthService authService, IUserRepository userReposi
         return NoContent();
     }
 
+    [Authorize]
+    [HttpDelete("me")]
+    public async Task<IActionResult> DeleteMe(CancellationToken ct)
+    {
+        await authService.DeleteAccountAsync(CurrentUserId, ct);
+        return NoContent();
+    }
+
     private async Task<ActionResult<AuthResponse>> Execute(Func<Task<AuthResponse>> action)
     {
         try
@@ -55,13 +63,7 @@ public class AuthController(IAuthService authService, IUserRepository userReposi
         }
         catch (AuthException ex)
         {
-            var statusCode = ex.Code switch
-            {
-                AuthErrorCode.EmailAlreadyRegistered => StatusCodes.Status409Conflict,
-                _ => StatusCodes.Status401Unauthorized,
-            };
-
-            return Problem(title: ex.Message, statusCode: statusCode);
+            return AuthProblem(ex);
         }
     }
 

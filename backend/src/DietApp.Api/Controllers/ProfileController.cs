@@ -26,7 +26,7 @@ public class ProfileController(IProfileService profileService) : ApiControllerBa
         }
         catch (ValidationException ex)
         {
-            return Problem(title: ex.Message, statusCode: StatusCodes.Status400BadRequest);
+            return ValidationProblem(ex);
         }
     }
 
@@ -39,7 +39,7 @@ public class ProfileController(IProfileService profileService) : ApiControllerBa
         }
         catch (ValidationException ex)
         {
-            return Problem(title: ex.Message, statusCode: StatusCodes.Status400BadRequest);
+            return ValidationProblem(ex);
         }
     }
 }

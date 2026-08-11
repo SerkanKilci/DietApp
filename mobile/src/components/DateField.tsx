@@ -1,6 +1,7 @@
 import { createElement, useState } from 'react';
 import { Platform, Pressable, Text, View } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@/theme/ThemeProvider';
 import { toDateOnlyString } from '@/utils/date';
@@ -15,7 +16,8 @@ interface DateFieldProps {
 // @react-native-community/datetimepicker'ın web taşıması yok (saf native modül) — web'de
 // tarayıcının kendi <input type="date"> öğesine düşüyoruz, native'de paketin kendi UI'ını kullanıyoruz.
 export function DateField({ value, onChange, minimumDate, maximumDate }: DateFieldProps) {
-  const { colors, spacing } = useTheme();
+  const { colors, spacing, isDark } = useTheme();
+  const { t } = useTranslation();
   const [showPicker, setShowPicker] = useState(Platform.OS === 'ios');
 
   if (Platform.OS === 'web') {
@@ -41,6 +43,9 @@ export function DateField({ value, onChange, minimumDate, maximumDate }: DateFie
         width: '100%',
         boxSizing: 'border-box',
         fontFamily: 'inherit',
+        // colorScheme olmadan tarayıcı takvim ikonunu her zaman koyu (siyah) çiziyor —
+        // dark modda koyu arka plan üzerinde görünmez oluyordu.
+        colorScheme: isDark ? 'dark' : 'light',
       },
     });
   }
@@ -60,7 +65,7 @@ export function DateField({ value, onChange, minimumDate, maximumDate }: DateFie
           }}
         >
           <Text style={{ color: value ? colors.textPrimary : colors.textSecondary, fontSize: 16 }}>
-            {value ? toDateOnlyString(value) : 'Tarih seç'}
+            {value ? toDateOnlyString(value) : t('common.selectDate')}
           </Text>
         </Pressable>
       )}

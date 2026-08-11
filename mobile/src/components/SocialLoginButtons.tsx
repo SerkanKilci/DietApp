@@ -6,6 +6,7 @@ import * as WebBrowser from 'expo-web-browser';
 import Constants from 'expo-constants';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 
 import { authApi } from '@/api/authApi';
 import { applySession } from '@/api/session';
@@ -21,6 +22,7 @@ const extra = (Constants.expoConfig?.extra ?? {}) as Record<string, string | und
 export function SocialLoginButtons() {
   const { spacing } = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
 
   const externalLoginMutation = useMutation({
     mutationFn: authApi.externalLogin,
@@ -69,7 +71,7 @@ export function SocialLoginButtons() {
   return (
     <View style={{ marginTop: spacing.lg, gap: spacing.sm }}>
       <Button
-        title="Google ile devam et"
+        title={t('auth.google')}
         variant="secondary"
         disabled={!isGoogleConfigured || !request || externalLoginMutation.isPending}
         onPress={() => promptAsync()}

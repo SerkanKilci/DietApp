@@ -6,6 +6,7 @@ import { applySession, clearSession } from './session';
 import { getAccessToken } from './tokenStore';
 import { AuthResponse } from './types';
 import { useAuthStore } from '@/store/authStore';
+import i18n from '@/i18n';
 
 // Android emulator can't reach the host machine via localhost — it uses 10.0.2.2 instead.
 // iOS simulator and physical devices on the same network need their own values here.
@@ -25,6 +26,9 @@ apiClient.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  // Backend besin isimlerini (ve ileride diğer lokalize içerikleri) bu header'a göre döner
+  // (bkz. ApiControllerBase.RequestLanguage) — i18n.language her dil değişiminde güncel kalır.
+  config.headers['Accept-Language'] = i18n.language;
   return config;
 });
 
